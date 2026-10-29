@@ -100,3 +100,16 @@ boyYes  | 2.0  | cut   | fast | And the boy said *YES.*                   | punc
   - `flash`: divine light burst at `at`.
 - **New scene `autocorrect`:** a search bar types `typed`, then shows "Did you mean: `suggest`?", then a `results` box. `header` sets the top label.
 - **`problem`:** long impact words now auto-fit the screen width.
+
+### Added for Ramayana Ep 3 (Jatayu)
+- **`stage` props:**
+  - `vulture`: `mode` is `perch`, `fly` or `fall`. Also accepts `eyes: "closed"`, `flip`, `rot`, `nowings`, `cutAt` (wings vanish at that second), `fallAt` + `fallDy` + `fallRot` (falls during the shot).
+  - `pushpaka`: Ravana's flying chariot; `tilt`.
+  - `pyre`: funeral fire; `fire` 0–1.
+  - `feathers`: drifting feathers; `n`, `spread`.
+  - `slash`: a red-glowing sword slash at `at`.
+- **Movement:** characters and props accept `x2` / `y2` to glide across the shot (for example riders on the Pushpaka).
+- **Characters and pose:** pose `sword` (Ravana's crescent blade). `stacheCol` sets the moustache colour.
+- **Ready-made cast:** `sita`, `dasharatha` (see `episodes/jatayu/episode.txt`). `who: "vulture"` works in chat, level-up, problem and VS avatars.
+- **New scene `versus`:** a fighting-game VS screen. `left` / `right` take `{"who", "name", "sub"}`; "FIGHT!" replaces "VS" at `fightAt`.
+- **Level-up counters** now show thousands separators (60,000).

@@ -49,6 +49,7 @@ pip install -r requirements.txt && python -m playwright install chromium   # plu
 | `episodes/ekalavya/` | The full 61 s reference episode (`episode.txt`) and its script and VO read (`script.md`) |
 | `episodes/shabari/` | Ramayana Ep 1, a 99 s voice-over episode (VO, alignment, Ramayana cast) |
 | `episodes/kumbhakarna/` | Ramayana Ep 2, a 95 s voice-over episode (Kumbhakarna, ten-headed Ravana, Saraswati, elephants, autocorrect gag) |
+| `episodes/jatayu/` | Ramayana Ep 3, an 84 s voice-over episode (Jatayu vs Ravana, VS screen, funeral pyre) |
 | `episodes/karna-armour/` | A 23 s template built only from generic scenes and custom characters |
 | `make_timeline.py` | Compiles `episode.txt` into the timeline JSON (caption timing, highlights, SFX cues, music sections, cameras) |
 | `renderer/` | Canvas renderer: `lib.js` (backgrounds, puppet characters, props), `scenes.js` (scenes, including the generic `stage`), `index.html` (camera, transitions, captions), `fonts/` (bundled, OFL) |

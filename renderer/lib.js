@@ -156,6 +156,7 @@ const POSES = {
   shoulderbow: { L: [[-14, -71], [-18, -60], [-17.5, -48]], R: [[14, -71], [20, -64], [12, -73]], bow: 'shoulder' },
   shock: { L: [[-14, -71], [-22, -66], [-18, -79]], R: [[14, -71], [22, -66], [18, -79]] },
   taste: { L: [[-14, -71], [-15, -59], [-7, -55]], R: [[14, -71], [17, -70], [5, -79.5]], hands: 'taste' },
+  sword: { L: [[-14, -71], [-18, -60], [-17.5, -48]], R: [[14, -71], [24, -82], [22, -95]], hands: 'sword' },
   mace: { L: [[-14, -71], [-18, -60], [-17.5, -48]], R: [[14, -71], [24, -80], [20, -93]], hands: 'mace' },
   veena: { L: [[-14, -71], [-19, -62], [-9, -66]], R: [[14, -71], [17, -60], [8, -56]], hands: 'veena' },
   sweep: { L: [[-14, -71], [-16, -62], [-6, -58]], R: [[14, -71], [14, -60], [4, -52]], hands: 'sweep' }
@@ -279,7 +280,7 @@ function drawPerson(x, y, h, p, t = 0) {
   const lip = col('#7a2f26');
   if (ex === 'shock') fillE(0, -79.4, 1.4, 1.9, col('#3a1410'));
   else { const cy = ex === 'smile' ? -78.4 : ex === 'sad' || ex === 'stern' ? -80.4 : -79.5; const ey = ex === 'sad' ? -79.2 : -79.8; ctx.beginPath(); ctx.moveTo(-2.2, ey); ctx.quadraticCurveTo(0, cy, 2.2, ey); ctx.strokeStyle = lip; ctx.lineWidth = 0.9; ctx.stroke(); }
-  if (p.stache) { ctx.beginPath(); ctx.moveTo(0, -81.6); ctx.bezierCurveTo(-3, -82.6, -6, -81.6, -7, -78.6); ctx.quadraticCurveTo(-4.5, -80.6, 0, -80.4); ctx.moveTo(0, -81.6); ctx.bezierCurveTo(3, -82.6, 6, -81.6, 7, -78.6); ctx.quadraticCurveTo(4.5, -80.6, 0, -80.4); ctx.fillStyle = col('#140c10'); ctx.fill(); }
+  if (p.stache) { ctx.beginPath(); ctx.moveTo(0, -81.6); ctx.bezierCurveTo(-3, -82.6, -6, -81.6, -7, -78.6); ctx.quadraticCurveTo(-4.5, -80.6, 0, -80.4); ctx.moveTo(0, -81.6); ctx.bezierCurveTo(3, -82.6, 6, -81.6, 7, -78.6); ctx.quadraticCurveTo(4.5, -80.6, 0, -80.4); ctx.fillStyle = col(p.stacheCol || '#140c10'); ctx.fill(); }
   if (p.fangs) { poly([[-2.1, -79.6], [-1.2, -79.6], [-1.65, -77.4]], '#fff8ec'); poly([[1.2, -79.6], [2.1, -79.6], [1.65, -77.4]], '#fff8ec'); }
   if (sari) { circ(0, -92.6, 0.85, col('#c8302a')); circ(2.3, -83.2, 0.55, gold); }
   if (p.old) { ctx.save(); ctx.globalAlpha *= 0.5; for (let i = 0; i < 3; i++) stroke([[-4.5, -96 + i * 1.3], [4.5, -96 + i * 1.3]], skinD, 0.3); ctx.restore(); }
@@ -347,6 +348,11 @@ function drawPerson(x, y, h, p, t = 0) {
   if (pose.hands === 'namaste') { ctx.beginPath(); ctx.moveTo(0, -70); ctx.quadraticCurveTo(-3.4, -64, -2.2, -59.5); ctx.lineTo(2.2, -59.5); ctx.quadraticCurveTo(3.4, -64, 0, -70); ctx.fillStyle = skin; ctx.fill(); ctx.strokeStyle = skinD; ctx.lineWidth = 0.5; ctx.stroke(); stroke([[0, -69], [0, -60]], skinD, 0.4); }
   if (pose.hands === 'pointR') { stroke([[36, -71], [41, -71.5]], skin, 1.6); }
   if (pose.hands === 'palmR') { rrect(19.5, -98.5, 7, 7.5, 2.5, skin); }
+  if (pose.hands === 'sword') {
+    ctx.save(); ctx.shadowColor = 'rgba(255,80,60,0.9)'; ctx.shadowBlur = 20 * h / 300;
+    ctx.beginPath(); ctx.moveTo(21, -96); ctx.quadraticCurveTo(36, -118, 22, -140); ctx.quadraticCurveTo(30, -118, 18, -97); ctx.closePath(); ctx.fillStyle = col('#eef2f6'); ctx.fill(); ctx.restore();
+    rrect(17, -98, 9, 3, 1, col(PAL.gold)); circ(22, -93, 2.8, skin);
+  }
   if (pose.hands === 'mace') {
     stroke([[20, -93], [17, -126]], col('#5a3a1a'), 2); circ(20, -93, 2.8, skin);
     ctx.save(); ctx.translate(16.5, -131); for (let i = 0; i < 8; i++) { ctx.rotate(TAU / 8); poly([[-1.2, -7], [1.2, -7], [0, -10]], col(PAL.goldD)); } ctx.restore();
@@ -490,5 +496,96 @@ function lankaCity(y0, t, fire = 0) {
     for (let i = 0; i < 16; i++) { const fx = -200 + i * 100 + R() * 60, fh = (80 + R() * 160) * (0.8 + 0.2 * Math.sin(t * 7 + i)) * fire;
       const g = ctx.createLinearGradient(0, y0 - fh, 0, y0); g.addColorStop(0, 'rgba(255,220,120,0)'); g.addColorStop(0.4, 'rgba(255,140,40,0.8)'); g.addColorStop(1, 'rgba(200,40,20,0.9)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(fx - 40, y0); ctx.quadraticCurveTo(fx - 30, y0 - fh * 0.6, fx + Math.sin(t * 5 + i) * 10, y0 - fh); ctx.quadraticCurveTo(fx + 30, y0 - fh * 0.6, fx + 40, y0); ctx.fill(); }
+  }
+}
+
+// ---------- Ep 3 (Jatayu) art ----------
+// vulture: mode perch | fly | fall | lying ; o.eyes 'closed' ; o.flip ; o.nowings
+function vulture(x, y, s, t, o = {}) {
+  const mode = o.mode || 'perch';
+  ctx.save(); ctx.translate(x, y); ctx.scale((o.flip ? -1 : 1) * s / 100, s / 100);
+  if (o.rot) ctx.rotate(o.rot);
+  const body = '#7a6a5a', bodyD = '#5e5044', wingC = '#5a4e46', wingL = '#8a7a6a', ruff = '#efe6d6', skin = '#d9a08a', gold = '#d9a43a';
+  const flap = mode === 'fly' ? Math.sin(t * 7) : 0;
+  const glow = o.rim !== false;
+  if (glow) { ctx.shadowColor = 'rgba(255,205,130,0.7)'; ctx.shadowBlur = 16 * s / 300; }
+  const wing = (side) => {
+    if (o.nowings) return;
+    ctx.save(); ctx.scale(side, 1);
+    if (mode === 'fly' || mode === 'fall') {
+      ctx.translate(10, -48); ctx.rotate((mode === 'fall' ? 0.9 : -0.25) + flap * 0.45);
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(40, -30, 82, -14); ctx.lineTo(78, -6);
+      for (let i = 0; i < 7; i++) { ctx.lineTo(74 - i * 10, 4 + (i % 2) * 7); }
+      ctx.lineTo(0, 14); ctx.closePath(); ctx.fillStyle = wingC; ctx.fill();
+      ctx.shadowBlur = 0; ctx.strokeStyle = wingL; ctx.lineWidth = 1.2; for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.moveTo(10 + i * 11, -4); ctx.lineTo(12 + i * 11, 8); ctx.stroke(); }
+    } else {
+      ctx.beginPath(); ctx.moveTo(8, -62); ctx.quadraticCurveTo(26, -50, 22, -14); ctx.lineTo(14, -6); ctx.lineTo(10, -16); ctx.quadraticCurveTo(10, -40, 4, -58); ctx.closePath(); ctx.fillStyle = wingC; ctx.fill();
+      ctx.shadowBlur = 0; ctx.strokeStyle = wingL; ctx.lineWidth = 1; for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(12 + i * 2, -46 + i * 9); ctx.lineTo(21, -42 + i * 9); ctx.stroke(); }
+    }
+    ctx.restore();
+  };
+  wing(-1); wing(1);
+  if (glow) { ctx.shadowColor = 'rgba(255,205,130,0.7)'; ctx.shadowBlur = 16 * s / 300; }
+  // body
+  fillE(0, -40, 15, 24, body); fillE(0, -36, 10.5, 17, '#9a8670');
+  ctx.shadowBlur = 0; ctx.strokeStyle = '#6e5e4e'; ctx.lineWidth = 0.7;
+  for (let r = 0; r < 5; r++) for (let c = -2; c <= 2; c++) { if (Math.abs(c) + r * 0.3 > 3) continue; ctx.beginPath(); ctx.arc(c * 3.6 + (r % 2) * 1.8, -48 + r * 5.5, 2, 0.2, Math.PI - 0.2); ctx.stroke(); }
+  ctx.shadowBlur = 0;
+  // tail + legs
+  poly([[-7, -18], [7, -18], [10, 0], [-10, 0]], bodyD);
+  if (mode === 'perch') { for (const lx of [-5, 5]) { stroke([[lx, -18], [lx, -2]], gold, 2.2); stroke([[lx - 4, 0], [lx, -2], [lx + 4, 0]], gold, 1.6); } }
+  // ruff
+  for (let i = 0; i < 9; i++) { const a = Math.PI + i / 8 * Math.PI; circ(Math.cos(a) * 10, -60 + Math.sin(a) * -3 + 2, 4, ruff); }
+  fillE(0, -61, 11, 4.5, ruff);
+  // neck + head
+  stroke([[0, -62], [0, -70]], skin, 5);
+  fillE(0, -76, 7.5, 7, skin);
+  const closed = o.eyes === 'closed';
+  for (const sx of [-1, 1]) {
+    if (closed) { ctx.beginPath(); ctx.moveTo(sx * 3.5 - 1.6, -78); ctx.quadraticCurveTo(sx * 3.5, -77, sx * 3.5 + 1.6, -78); ctx.strokeStyle = '#2a1410'; ctx.lineWidth = 0.6; ctx.stroke(); }
+    else { circ(sx * 3.5, -78, 1.7, '#f8e7b0'); circ(sx * 3.5, -78, 0.9, '#2a1410'); circ(sx * 3.5 + 0.3, -78.4, 0.3, '#fff'); }
+    stroke([[sx * 1.3, -80.5], [sx * 5.4, -81.4]], '#efe6d6', 0.9);
+  }
+  // hooked beak
+  ctx.beginPath(); ctx.moveTo(-2.4, -76); ctx.lineTo(2.4, -76); ctx.quadraticCurveTo(2.6, -70, 0, -66.5); ctx.quadraticCurveTo(-1.4, -69, -2.4, -76); ctx.fillStyle = '#e8c070'; ctx.fill();
+  poly([[-0.8, -67.5], [0.8, -67.5], [0, -65.8]], '#3a2a1a');
+  // golden crest (royal bird)
+  poly([[-3, -82], [0, -89], [3, -82]], gold); circ(0, -84, 1, '#c8302a');
+  ctx.restore();
+}
+function pushpaka(x, y, s, t, o = {}) {
+  ctx.save(); ctx.translate(x, y + Math.sin(t * 2) * 6); ctx.scale(s / 100, s / 100); ctx.rotate(o.tilt || 0);
+  // clouds under
+  for (let i = -3; i <= 3; i++) fillE(i * 16, 6 + Math.abs(i) * 1.5, 14, 7, 'rgba(255,240,225,0.75)');
+  // hull (front part, drawn over riders' legs)
+  ctx.beginPath(); ctx.moveTo(-62, -14); ctx.quadraticCurveTo(0, -4, 62, -14); ctx.lineTo(50, 6); ctx.quadraticCurveTo(0, 14, -50, 6); ctx.closePath();
+  const g = ctx.createLinearGradient(0, -14, 0, 12); g.addColorStop(0, '#ffe08a'); g.addColorStop(1, '#a8742a'); ctx.fillStyle = g; ctx.fill();
+  ctx.strokeStyle = '#7a4a1a'; ctx.lineWidth = 1; ctx.stroke();
+  for (let i = -4; i <= 4; i++) circ(i * 11, -3, 2, i % 2 ? '#c8302a' : '#2f5aa8');
+  poly([[-62, -14], [-74, -30], [-56, -16]], '#f2c14e'); poly([[62, -14], [74, -30], [56, -16]], '#f2c14e');
+  ctx.restore();
+}
+function pyre(x, y, s, t, fire = 1) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s / 100, s / 100);
+  fillE(0, 0, 60, 6, 'rgba(15,5,15,0.4)');
+  for (let r = 0; r < 4; r++) for (let i = 0; i < 4; i++) { const yy = -6 - r * 9; if (r % 2) rrect(-40 + i * 22, yy - 5, 14, 9, 3, '#5a3a24'); else rrect(-46, yy - 4 + 0, 92, 7, 3, i === 0 ? '#6a4428' : 'rgba(0,0,0,0)'); }
+  if (fire > 0) {
+    for (let i = 0; i < 9; i++) {
+      const fx = -36 + i * 9, fh = (34 + 22 * Math.sin(i * 1.7)) * (0.8 + 0.2 * Math.sin(t * 9 + i)) * fire;
+      const fg = ctx.createLinearGradient(0, -40 - fh, 0, -38); fg.addColorStop(0, 'rgba(255,230,140,0)'); fg.addColorStop(0.35, 'rgba(255,170,60,0.9)'); fg.addColorStop(1, 'rgba(230,70,30,0.95)');
+      ctx.fillStyle = fg; ctx.beginPath(); ctx.moveTo(fx - 8, -36); ctx.quadraticCurveTo(fx - 6, -36 - fh * 0.6, fx + Math.sin(t * 6 + i) * 3, -38 - fh); ctx.quadraticCurveTo(fx + 6, -36 - fh * 0.6, fx + 8, -36); ctx.fill();
+    }
+    const gl = ctx.createRadialGradient(0, -50, 5, 0, -50, 140); gl.addColorStop(0, `rgba(255,170,80,${0.35 * fire})`); gl.addColorStop(1, 'rgba(255,170,80,0)'); ctx.fillStyle = gl; ctx.fillRect(-150, -200, 300, 260);
+    const R = rng(91); for (let i = 0; i < 14; i++) { const ph = (t * 0.5 + R()) % 1; circ(-30 + R() * 60 + Math.sin(t * 2 + i) * 8, -60 - ph * 150, 1.5 * (1 - ph), `rgba(255,210,120,${1 - ph})`); }
+  }
+  ctx.restore();
+}
+function feathers(t, x, y, n = 10, seed = 3, spread = 500) {
+  const R = rng(seed);
+  for (let i = 0; i < n; i++) {
+    const ph = (t * 0.25 + R()) % 1, fx = x + (R() - 0.5) * spread + Math.sin(t * 1.5 + i) * 40, fy = y + ph * 900;
+    ctx.save(); ctx.translate(fx, fy); ctx.rotate(Math.sin(t * 2 + i) * 0.8); ctx.globalAlpha *= Math.sin(ph * Math.PI);
+    ctx.beginPath(); ctx.moveTo(0, -30); ctx.quadraticCurveTo(12, 0, 0, 30); ctx.quadraticCurveTo(-12, 0, 0, -30); ctx.fillStyle = i % 3 ? '#6e6258' : '#d9a43a'; ctx.fill();
+    stroke([[0, -30], [0, 34]], '#efe6d6', 1.5); ctx.restore();
   }
 }

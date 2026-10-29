@@ -16,7 +16,8 @@ function forestBase(T, o = {}) {
 }
 function avatar(cx, cy, r, who, T, o = {}) {
   ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.fillStyle = o.bg || '#3a2a4a'; ctx.fill(); ctx.clip();
-  const h = r * 6.2; drawPerson(cx, cy + 6 + 0.87 * h, h, Object.assign({ who, rim: false }, o), T);
+  if (who === 'vulture') vulture(cx, cy + r * 2.15, r * 2.9, T, { mode: 'perch', rim: false });
+  else { const h = r * 6.2; drawPerson(cx, cy + 6 + 0.87 * h, h, Object.assign({ who, rim: false }, o), T); }
   ctx.restore();
 }
 function star(cx, cy, r, filled) {
@@ -163,7 +164,7 @@ const SCENES = {
       if (cnt) {
         const v = Math.round(lerp(cnt.from, cnt.to, ease(lt / Math.max(0.6, (CUR.t1 - CUR.t0) * 0.75))));
         txt(cnt.label, 540, 760, 52, { fill: '#b8aec8' });
-        txt(String(v), 540, 960, 260, { fill: PAL.gold, stroke: '#1a0e10', sw: 18, scale: 1 + 0.05 * Math.sin(lt * 25) });
+        txt(v.toLocaleString('en-US'), 540, 960, v >= 10000 ? 210 : 260, { fill: PAL.gold, stroke: '#1a0e10', sw: 18, scale: 1 + 0.05 * Math.sin(lt * 25) });
         if (D('stamp', null)) stamp(D('stamp', 'SELF-TAUGHT'), 540, 1520, lt - Math.max(0.8, (CUR.t1 - CUR.t0) - 0.7), { size: 92, color: PAL.gold, rot: -0.1 });
         return;
       }
@@ -380,6 +381,12 @@ SCENES.stage = {
       if (pr.type === 'elephant') elephant(lerp(pr.x, pr.x2 ?? pr.x, ease(lt / (CUR.t1 - CUR.t0))), pr.y, pr.s || 300, T, pr);
       if (pr.type === 'drum') drum(pr.x, pr.y, pr.s || 200, T, hit);
       if (pr.type === 'bed') bed(pr.x, pr.y, pr.s || 500);
+      const pm = ease(lt / (CUR.t1 - CUR.t0)), px = lerp(pr.x, pr.x2 ?? pr.x, pm), py = lerp(pr.y, pr.y2 ?? pr.y, pm);
+      if (pr.type === 'vulture') { const fallK = pr.fallAt != null && lt > pr.fallAt ? easeOut((lt - pr.fallAt) / 0.9) : 0; vulture(px, py + fallK * (pr.fallDy || 0), pr.s || 400, T, Object.assign({}, pr, { mode: fallK > 0 ? 'fall' : pr.mode, nowings: pr.nowings || (pr.cutAt != null && lt > pr.cutAt), rot: (pr.rot || 0) + fallK * (pr.fallRot || 0) })); }
+      if (pr.type === 'pushpaka') pushpaka(px, py, pr.s || 500, T, pr);
+      if (pr.type === 'pyre') pyre(px, py, pr.s || 400, T, pr.fire ?? 1);
+      if (pr.type === 'feathers') feathers(lt, px, py, pr.n || 10, pr.seed || 3, pr.spread || 500);
+      if (pr.type === 'slash' && lt > pr.at) { const k = clamp((lt - pr.at) / 0.25), a = 1 - clamp((lt - pr.at - 0.2) / 0.5); ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = '#fff6e0'; ctx.lineWidth = 26 * (1 - k * 0.6); ctx.lineCap = 'round'; ctx.shadowColor = '#ff4a3d'; ctx.shadowBlur = 40; ctx.beginPath(); ctx.moveTo(pr.x - 500, pr.y - 500); ctx.lineTo(pr.x - 500 + 1000 * k, pr.y - 500 + 1000 * k); ctx.stroke(); ctx.restore(); }
       if (pr.type === 'zzz') for (let i = 0; i < 3; i++) { const ph = (lt * 0.6 + i / 3) % 1; txt('Z', pr.x + ph * 120 + i * 10, pr.y - ph * 260, (pr.s || 80) * (0.6 + ph), { fill: '#e9e2ff', stroke: '#2a1a3a', sw: 8, alpha: Math.sin(ph * Math.PI) }); }
       if (pr.type === 'text') txt(pr.text, pr.x, pr.y, pr.s || 90, { fill: pr.fill || '#fff2c8', stroke: '#1a0e10', sw: 10, rot: pr.rot || 0, scale: pr.at != null ? (lt < pr.at ? 0 : easeBack((lt - pr.at) / 0.2)) : 1 });
       if (pr.type === 'flash') { const a = pr.at != null ? Math.max(0, 1 - Math.abs(lt - pr.at) / 0.35) : 0.5; const g = ctx.createRadialGradient(pr.x, pr.y, 0, pr.x, pr.y, 900); g.addColorStop(0, `rgba(255,245,210,${a})`); g.addColorStop(1, 'rgba(255,245,210,0)'); ctx.fillStyle = g; ctx.fillRect(-300, -300, W + 600, H + 600); }
@@ -389,7 +396,8 @@ SCENES.stage = {
       const late = c.switch != null && lt > c.switch;
       const p = Object.assign({}, c, { pose: late && c.pose2 ? c.pose2 : c.pose, expr: late && c.expr2 ? c.expr2 : c.expr, eyes: late && c.eyes2 ? c.eyes2 : c.eyes });
       if (c.enter) { const k = easeOut(lt / c.enter); p.alpha = k; }
-      drawPerson(c.x ?? 540, c.y ?? 1750, c.h ?? 1000, p, T);
+      const mk = ease(lt / (CUR.t1 - CUR.t0));
+      drawPerson(lerp(c.x ?? 540, c.x2 ?? c.x ?? 540, mk), lerp(c.y ?? 1750, c.y2 ?? c.y ?? 1750, mk), c.h ?? 1000, p, T);
     }
     props.filter(pr => pr.front).forEach(drawProp);
     if (D('fireflies', 18)) fireflies(T, D('fireflies', 18), D('seed', 7));
@@ -430,5 +438,33 @@ SCENES.autocorrect = {
       rrect(110, 980, 860, 260, 30, 'rgba(30,20,40,0.92)'); ctx.strokeStyle = PAL.gold; ctx.lineWidth = 4; ctx.stroke();
       txt(D('results', ''), 540, 1110, 46, { fill: '#fff' });
     }
+  }
+};
+
+// ---------- fighting-game VS screen ----------
+// > left: {"who": "vulture", "name": "JATAYU", "sub": "60,000 YRS OLD"}   > right: {"who": "ravana", "name": "RAVANA", "sub": "10 HEADS"}
+SCENES.versus = {
+  draw(lt, T) {
+    ctx.fillStyle = '#2a3a8a'; ctx.fillRect(-600, -600, W + 1200, H + 1200);
+    ctx.fillStyle = '#9a1f2a'; ctx.beginPath(); ctx.moveTo(W + 600, -600); ctx.lineTo(W + 600, H + 600); ctx.lineTo(380, H + 600); ctx.lineTo(700, -600); ctx.closePath(); ctx.fill();
+    ctx.save(); ctx.globalAlpha = 0.15; for (let i = 0; i < 30; i++) stroke([[-600 + i * 80 + (lt * 600 % 80), -600], [-300 + i * 80 + (lt * 600 % 80), H + 600]], '#fff', 6); ctx.restore();
+  },
+  over(lt, T) {
+    const L = D('left', {}), Rr = D('right', {});
+    const slide = k => easeOut(clamp((lt - k) / 0.35));
+    const portrait = (side, d, k) => {
+      const cx = side < 0 ? lerp(-400, 300, k) : lerp(1480, 780, k), cy = side < 0 ? 520 : 1480;
+      ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, 250, 0, TAU); ctx.fillStyle = side < 0 ? '#3a4aa8' : '#b8323a'; ctx.fill(); ctx.lineWidth = 12; ctx.strokeStyle = PAL.gold; ctx.stroke(); ctx.clip();
+      if (d.who === 'vulture') vulture(cx, cy + 700, 950, T, { mode: 'perch', rim: false });
+      else drawPerson(cx, cy + 6 + 0.87 * 1500 + 40, 1500, { who: d.who, rim: false, expr: d.expr || 'stern' }, T);
+      ctx.restore();
+      txt(d.name || '', cx, cy + 310, 84, { fill: '#fff', stroke: '#140a12', sw: 12 });
+      txt(d.sub || '', cx, cy + 385, 40, { fill: PAL.gold, stroke: '#140a12', sw: 8 });
+    };
+    portrait(-1, L, slide(0)); portrait(1, Rr, slide(0.15));
+    const fa0 = D('fightAt', 1.4);
+    if (lt > 0.45 && lt < fa0) txt('VS', 540, 1075, 240, { fill: PAL.gold, stroke: '#140a12', sw: 22, scale: easeBack((lt - 0.45) / 0.25), rot: -0.08 });
+    const fa = D('fightAt', 1.4);
+    if (lt > fa) txt('FIGHT!', 540, 1075, 190, { fill: '#ff4a3d', stroke: '#140a12', sw: 18, scale: easeBack((lt - fa) / 0.2) });
   }
 };

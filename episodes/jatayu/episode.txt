@@ -1,0 +1,148 @@
+title: The bird who got a prince's funeral
+fps: 30
+vo: vo.wav
+vo_align: vo_align.json
+cast: {"rama": {"base": "arjuna", "skin": "#4a78c0", "hair": "jata", "top": "bare", "dhoti": "#e3a92e", "border": "#c8452f", "neck": "mala", "tilak": "red", "quiver": true}, "lakshmana": {"base": "arjuna", "skin": "#d39b6e", "hair": "jata", "top": "bare", "dhoti": "#c8602a", "border": "#f2c14e", "neck": "mala", "tilak": "red", "quiver": true}, "ravana": {"base": "arjuna", "heads": 10, "skin": "#9a6a52", "stache": true, "top": "armour", "dhoti": "#4a1a5a", "border": "#f2c14e", "quiver": false}, "sita": {"base": "eka", "body": "sari", "sari": "#c0303a", "border": "#f2c14e", "hair": "bun", "hairCol": "#1d1216", "neck": "gold", "skin": "#dba47c", "quiver": false, "band": "#f2c14e"}, "dasharatha": {"base": "arjuna", "old": true, "stache": true, "stacheCol": "#e9e2d6", "skin": "#c99a6e", "dhoti": "#7a2a6a", "border": "#f2c14e", "quiver": false}}
+
+# scene    | secs | in    | mood      | captions                                              | fx
+stage      | auto | black | calm      | A prince performed funeral rites / for a *bird.*      | riser_short@0
+  > title: RAMAYANA
+  > bg: forest
+  > dusk: 0.4
+  > sun: {"y": 1060, "r": 80, "rays": 0.3}
+  > chars: [{"who": "rama", "x": 760, "y": 1780, "h": 950, "kneel": true, "pose": "namaste", "expr": "sad", "eyes": "closed"}]
+  > props: [{"type": "pyre", "x": 330, "y": 1790, "s": 520, "fire": 1}, {"type": "feathers", "x": 540, "y": 200, "n": 6, "spread": 900, "front": true}]
+stage      | auto | cut   | calm      | Like it was his own *father.*                         | punch@w6
+  > bg: forest
+  > dusk: 0.5
+  > sun: {"y": 760, "r": 120, "rays": 0.5, "ring": true}
+  > chars: [{"who": "rama", "x": 540, "y": 2600, "h": 2000, "pose": "namaste", "expr": "sad", "eyes": "closed", "tear": true}]
+stage      | auto | cut   | fast      | His name was *Jatayu.* / An old vulture.              | ding@w4
+  > bg: forest
+  > sun: {"y": 900, "r": 120, "rays": 0.6, "ring": true}
+  > chars: []
+  > props: [{"type": "vulture", "x": 540, "y": 1780, "s": 1150, "mode": "perch"}]
+levelup    | auto | cut   | fast      | Sixty thousand years old.                             | levelup@0.1
+  > who: vulture
+  > header: CHARACTER STATS
+  > skill: WISDOM
+  > sub: FRIEND OF KING DASHARATHA
+  > counter: {"label": "AGE (YEARS)", "from": 1, "to": 60000}
+  > stamp: BOOMER
+stage      | auto | fade  | calm      | A friend of Rama's *father.*                          |
+  > bg: ashram
+  > flashback: true
+  > label: LONG AGO
+  > chars: [{"who": "dasharatha", "x": 330, "y": 1780, "h": 1000, "pose": "bless", "expr": "smile", "look": 0.8}]
+  > props: [{"type": "vulture", "x": 760, "y": 1780, "s": 820, "mode": "perch", "front": true}]
+stage      | auto | cut   | fast      | One day, he heard a woman / screaming from the sky.   | dramatic@w7
+  > bg: forest
+  > sun: {"y": 700, "r": 120, "rays": 0.5}
+  > chars: []
+  > props: [{"type": "vulture", "x": 540, "y": 2650, "s": 2500, "mode": "perch"}]
+stage      | auto | cut   | fast      | It was *Sita.* / Being carried away by *Ravana* / in his flying chariot. | whoosh@w1
+  > bg: sunset
+  > sun: {"y": 1100, "r": 90, "rays": 0.4}
+  > fireflies: 0
+  > chars: [{"who": "ravana", "x": 980, "x2": 380, "y": 900, "y2": 760, "h": 520, "pose": "point", "expr": "smile", "look": -1}, {"who": "sita", "x": 1150, "x2": 550, "y": 900, "y2": 760, "h": 480, "pose": "shock", "expr": "shock", "look": 1}]
+  > props: [{"type": "pushpaka", "x": 1060, "x2": 460, "y": 910, "y2": 770, "s": 600, "front": true}]
+stage      | auto | cut   | fast      | Jatayu was old. / His wings were tired. / He could have looked away. |
+  > bg: forest
+  > dusk: 0.15
+  > sun: {"x": 300, "y": 900, "r": 100, "rays": 0.3}
+  > chars: []
+  > props: [{"type": "vulture", "x": 540, "y": 1900, "s": 1500, "mode": "perch", "eyes": "closed"}]
+  > cam: {"z": [1.0, 1.15], "x": [540, 540], "y": [1100, 1000]}
+problem    | auto | cut   | fast      | ~He didn't.                                           | punch@w1
+  > word: HE DIDN'T.
+  > who: vulture
+versus     | auto | cut   | fast      | He flew straight at / the *king of Lanka.*            | dramatic@w1 impact@w6
+  > left: {"who": "vulture", "name": "JATAYU", "sub": "AGE 60,000"}
+  > right: {"who": "ravana", "name": "RAVANA", "sub": "10 HEADS"}
+  > fightAt: 1.5
+stage      | auto | cut   | fast      | He broke *Ravana's* bow.                              | impact@w3
+  > bg: sunset
+  > fireflies: 0
+  > chars: [{"who": "ravana", "x": 600, "y": 980, "h": 600, "pose": "shock", "expr": "shock", "look": -1}]
+  > props: [{"type": "pushpaka", "x": 640, "y": 990, "s": 700, "front": true}, {"type": "vulture", "x": 260, "x2": 330, "y": 900, "y2": 820, "s": 650, "mode": "fly", "front": true}, {"type": "text", "text": "SNAP!", "x": 760, "y": 560, "s": 130, "rot": 0.12, "at": 0.4, "front": true}]
+stage      | auto | cut   | fast      | Smashed his chariot.                                  | impact@w1
+  > bg: sunset
+  > fireflies: 0
+  > chars: [{"who": "ravana", "x": 560, "y": 1000, "h": 600, "pose": "shock", "expr": "shock", "look": 1}]
+  > props: [{"type": "pushpaka", "x": 560, "y": 1010, "s": 700, "tilt": 0.25, "front": true}, {"type": "vulture", "x": 860, "y": 720, "s": 620, "mode": "fly", "flip": true, "front": true}, {"type": "feathers", "x": 540, "y": 300, "n": 8, "front": true}, {"type": "text", "text": "CRASH!", "x": 300, "y": 520, "s": 130, "rot": -0.1, "at": 0.2, "front": true}]
+stage      | auto | cut   | fast      | Took down his charioteer.                             | thunk@w2
+  > bg: sunset
+  > fireflies: 0
+  > chars: []
+  > props: [{"type": "pushpaka", "x": 540, "y": 1100, "s": 650, "tilt": -0.3}, {"type": "vulture", "x": 540, "y": 860, "s": 800, "mode": "fly", "front": true}, {"type": "text", "text": "K.O.", "x": 760, "y": 520, "s": 150, "rot": 0.1, "at": 0.3, "front": true}]
+stage      | auto | cut   | fast      | For a moment... / the old bird was *winning.*         | ding@w8
+  > bg: sunset
+  > sun: {"y": 800, "r": 140, "rays": 0.9, "ring": true, "big": true}
+  > fireflies: 0
+  > chars: []
+  > props: [{"type": "vulture", "x": 540, "y": 1250, "s": 1100, "mode": "fly"}]
+  > badge: WINNING
+problem    | auto | cut   | calm      | ~Then.                                                | punch@w1
+  > word: THEN.
+  > who: ""
+stage      | auto | cut   | calm      | *Ravana* drew his !sword!                             | dramatic@w1
+  > bg: sunset
+  > dusk: 0.3
+  > tint: red
+  > fireflies: 0
+  > chars: [{"who": "ravana", "x": 540, "y": 2550, "h": 1900, "pose": "down", "expr": "stern", "switch": 0.5, "pose2": "sword"}]
+stage      | auto | cut   | calm      | and cut off his wings.                                | impact@0.35
+  > bg: sunset
+  > dusk: 0.35
+  > fireflies: 0
+  > chars: []
+  > props: [{"type": "vulture", "x": 540, "y": 1250, "s": 1100, "mode": "fly", "cutAt": 0.45}, {"type": "slash", "x": 540, "y": 900, "at": 0.35, "front": true}, {"type": "feathers", "x": 540, "y": 500, "n": 12, "spread": 700, "front": true}]
+stage      | auto | fade  | heartbeat | Jatayu *fell.*                                        |
+  > bg: sunset
+  > dusk: 0.45
+  > fireflies: 0
+  > chars: []
+  > props: [{"type": "vulture", "x": 540, "y": 900, "s": 700, "mode": "fly", "nowings": true, "fallAt": 0.1, "fallDy": 900, "fallRot": 2.4}, {"type": "feathers", "x": 540, "y": 300, "n": 14, "spread": 800, "front": true}]
+stage      | auto | fade  | sad       | Hours later, / Rama and Lakshmana found him / lying on the forest floor. |
+  > bg: forest
+  > dusk: 0.5
+  > sun: {"y": 1080, "r": 70, "rays": 0.2}
+  > chars: [{"who": "rama", "x": 120, "x2": 380, "y": 1700, "h": 900, "pose": "shock", "expr": "shock", "look": 1}, {"who": "lakshmana", "x": -80, "x2": 170, "y": 1690, "h": 860, "pose": "shock", "expr": "shock", "look": 1}]
+  > props: [{"type": "vulture", "x": 470, "y": 1760, "s": 700, "mode": "perch", "rot": 1.45, "nowings": true, "eyes": "closed", "front": true}]
+stage      | auto | cut   | sad       | With his last breath, / he told them / which way Ravana went. / *South.* |
+  > bg: forest
+  > dusk: 0.55
+  > sun: {"y": 820, "r": 120, "rays": 0.3}
+  > chars: [{"who": "rama", "x": 540, "y": 2050, "h": 1500, "kneel": true, "pose": "offer", "expr": "sad", "look": 0.3}]
+  > props: [{"type": "vulture", "x": 790, "y": 1560, "s": 560, "mode": "perch", "rot": -1.4, "nowings": true, "front": true}]
+stage      | auto | fade  | sad       | Then he died / in Rama's *arms.*                      |
+  > bg: forest
+  > dusk: 0.6
+  > sun: {"y": 820, "r": 120, "rays": 0.5, "ring": true}
+  > chars: [{"who": "rama", "x": 540, "y": 2050, "h": 1500, "kneel": true, "pose": "offer", "expr": "sad", "eyes": "closed", "tear": true}]
+  > props: [{"type": "vulture", "x": 790, "y": 1560, "s": 560, "mode": "perch", "rot": -1.4, "nowings": true, "eyes": "closed", "front": true}]
+stage      | auto | fade  | sad       | And Rama, a prince of Ayodhya, / built the funeral fire *himself.* |
+  > bg: forest
+  > dusk: 0.6
+  > sun: {"y": 1080, "r": 70, "rays": 0.2}
+  > chars: [{"who": "rama", "x": 720, "y": 1780, "h": 1000, "pose": "offer", "expr": "sad", "look": -1}]
+  > props: [{"type": "pyre", "x": 330, "y": 1790, "s": 480, "fire": 0.35}]
+stage      | auto | fade  | sad       | He did for a bird / what a son does for his *father.* |
+  > bg: forest
+  > dusk: 0.7
+  > sun: {"y": 1080, "r": 70, "rays": 0.2}
+  > chars: [{"who": "rama", "x": 540, "y": 1960, "h": 1300, "kneel": true, "pose": "namaste", "expr": "sad", "eyes": "closed"}]
+  > props: [{"type": "pyre", "x": 540, "y": 1500, "s": 700, "fire": 1}]
+  > cam: {"z": [1.0, 1.12], "x": [540, 540], "y": [1100, 1050]}
+stage      | auto | fade  | sad       | Because Jatayu didn't win the fight... / but he never *ran* from it. |
+  > bg: sunset
+  > dusk: 0.4
+  > sun: {"y": 1000, "r": 130, "rays": 0.8, "ring": true, "big": true}
+  > chars: []
+  > props: [{"type": "feathers", "x": 540, "y": 200, "n": 5, "spread": 300, "seed": 11}]
+review     | 3.4  | cut   | fast      | -                                                     | pop@0.4 pop@1.1 ding@2.0
+  > header: RATE MY BODYGUARD
+  > who: vulture
+  > name: JATAYU
+  > sub: royal vulture · 60,000 yrs experience
+  > rows: [[0.4, 5, "took on a 10-headed king at 60,000", "Sita"], [1.1, 1, "ruined my chariot", "Ravana"]]
