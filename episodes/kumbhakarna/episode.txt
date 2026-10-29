@@ -1,0 +1,151 @@
+title: The demon who lost everything to one wrong word
+fps: 30
+vo: vo.wav
+vo_align: vo_align.json
+cast: {"kumbha": {"base": "arjuna", "hair": "wild", "crown": true, "skin": "#6e4e5e", "top": "armour", "dhoti": "#7a1f2a", "border": "#f2c14e", "fangs": true, "stache": true, "neck": "gold", "quiver": false}, "ravana": {"base": "arjuna", "heads": 10, "skin": "#9a6a52", "stache": true, "top": "armour", "dhoti": "#4a1a5a", "border": "#f2c14e", "quiver": false}, "saraswati": {"base": "eka", "body": "sari", "sari": "#f4efe6", "border": "#e0b04a", "hair": "bun", "hairCol": "#1d1216", "halo": true, "neck": "gold", "skin": "#e0b08a", "quiver": false, "band": "#f2c14e"}, "indra": {"base": "arjuna", "skin": "#e2b48a", "dhoti": "#2f5aa8", "quiver": false}, "soldier": {"base": "prince", "hair": "plain", "dhoti": "#5a2a3a", "neck": "none", "skin": "#7a5a5a", "fangs": true}}
+
+# scene     | secs | in    | mood      | captions                                              | fx
+stage       | auto | black | fast      | The strongest warrior in Lanka / lost everything     | riser_short@0
+  > title: RAMAYANA
+  > bg: lanka
+  > sun: {"y": 980, "r": 100, "rays": 0.5}
+  > chars: [{"who": "kumbha", "x": 540, "y": 1850, "h": 1500, "pose": "down", "expr": "neutral"}, {"who": "soldier", "x": 170, "y": 1800, "h": 330, "pose": "shock", "expr": "shock"}, {"who": "soldier", "x": 900, "y": 1800, "h": 320, "pose": "shock", "expr": "shock", "phase": 1}]
+stage       | auto | cut   | fast      | because of *one wrong word.*                          | punch@w2
+  > bg: lanka
+  > sun: {"y": 760, "r": 140, "rays": 0.6, "ring": true}
+  > chars: [{"who": "kumbha", "x": 540, "y": 2650, "h": 2000, "pose": "down", "expr": "sad"}]
+stage       | auto | cut   | fast      | *Kumbhakarna.* Ravana's little brother.               |
+  > bg: lanka
+  > chars: [{"who": "ravana", "x": 250, "y": 1790, "h": 800, "pose": "down", "expr": "smile", "look": 1}, {"who": "kumbha", "x": 700, "y": 1880, "h": 1450, "pose": "down", "expr": "smile", "look": -0.6}]
+  > props: [{"type": "text", "text": "little?", "x": 300, "y": 760, "s": 90, "rot": -0.12, "at": 1.2}]
+stage       | auto | cut   | fast      | Taller than mountains.                                | dramatic@w1
+  > bg: lanka
+  > chars: [{"who": "kumbha", "x": 540, "y": 2200, "h": 2400, "pose": "down", "expr": "neutral"}, {"who": "soldier", "x": 200, "y": 1900, "h": 300, "pose": "shock", "expr": "shock"}, {"who": "soldier", "x": 880, "y": 1900, "h": 290, "pose": "shock", "expr": "shock", "phase": 2}]
+  > cam: {"z": [1.0, 1.0], "x": [540, 540], "y": [1300, 700]}
+stage       | auto | cut   | fast      | He prayed for years / to ask *Brahma* for one thing:  |
+  > bg: forest
+  > sun: {"y": 820, "r": 140, "rays": 0.9, "ring": true, "big": true}
+  > chars: [{"who": "kumbha", "x": 540, "y": 1900, "h": 1300, "kneel": true, "pose": "namaste", "expr": "neutral", "eyes": "closed"}]
+problem     | auto | cut   | fast      | ~Indra's throne.                                      | punch@w1
+  > word: INDRA'S THRONE
+  > who: indra
+chat        | auto | cut   | fast      | The gods *panicked.*                                  | pop@0.05 pop@0.4 pop@0.75
+  > channel: #devaloka
+  > messages: [[0.05, "indra", "INDRA", "he's asking for MY THRONE"], [0.4, "indra", "INDRA", "someone do something"], [0.75, "saraswati", "SARASWATI", "on it."]]
+  > typer: Indra
+  > left: ""
+  > stamp: ""
+stage       | auto | cut   | fast      | So goddess *Saraswati* / tied his tongue.             | ding@w3
+  > bg: forest
+  > sun: {"y": 820, "r": 120, "rays": 0.8, "ring": true}
+  > chars: [{"who": "saraswati", "x": 540, "y": 1830, "h": 1150, "pose": "veena", "expr": "smile"}]
+  > props: [{"type": "flash", "x": 540, "y": 900, "at": 1.4}]
+autocorrect | auto | cut   | fast      | And instead of "Indrasana"... / he said "*Nidrasana.*" / The throne of !sleep.! | pop@w4 stamp@w6
+  > header: BOON REQUEST.EXE
+  > typed: Indrasana
+  > suggest: Nidrasana
+  > results: Showing results for: SLEEP (6 months)
+problem     | auto | cut   | fast      | ~Wish granted.                                        | punch@w1
+  > word: WISH GRANTED.
+  > who: kumbha
+levelup     | auto | cut   | fast      | He slept for six months. / Woke up for one day.       | levelup@0.1
+  > who: kumbha
+  > header: BOON ACTIVE
+  > skill: SLEEP
+  > sub: 6 MONTHS ON · 1 DAY OFF
+  > counter: {"label": "MONTHS ASLEEP", "from": 0, "to": 6}
+  > stamp: AFK
+stage       | auto | cut   | fast      | Ate everything.                                       |
+  > bg: lanka
+  > chars: [{"who": "kumbha", "x": 540, "y": 2600, "h": 2000, "pose": "taste", "expr": "smile"}]
+stage       | auto | cut   | fast      | And slept again.                                      |
+  > bg: lanka
+  > dusk: 0.5
+  > chars: [{"who": "kumbha", "x": 1060, "y": 1660, "h": 1000, "rot": -1.5708, "pose": "down", "expr": "smile", "eyes": "closed"}]
+  > props: [{"type": "zzz", "x": 200, "y": 1300, "s": 90, "front": true}]
+stage       | auto | cut   | calm      | Then war came to Lanka.                               |
+  > bg: lanka
+  > fire: 1
+  > dusk: 0.3
+  > chars: []
+stage       | auto | cut   | calm      | *Ravana* needed him.                                  |
+  > bg: lanka
+  > fire: 0.6
+  > chars: [{"who": "ravana", "x": 540, "y": 2600, "h": 1900, "pose": "down", "expr": "sad"}]
+stage       | auto | cut   | fast      | To wake him, / they beat a thousand drums,           | thunk@w5 thunk@w6 thunk@w7 thunk@w8
+  > bg: lanka
+  > dusk: 0.4
+  > chars: [{"who": "kumbha", "x": 1060, "y": 1660, "h": 1000, "rot": -1.5708, "pose": "down", "expr": "smile", "eyes": "closed"}, {"who": "soldier", "x": 260, "y": 1880, "h": 360, "pose": "point", "expr": "stern"}, {"who": "soldier", "x": 760, "y": 1890, "h": 360, "pose": "shock", "expr": "stern", "phase": 1}]
+  > props: [{"type": "drum", "x": 400, "y": 1900, "s": 260, "hits": [1.4, 1.8, 2.2, 2.6, 3.0]}, {"type": "drum", "x": 620, "y": 1900, "s": 240, "hits": [1.6, 2.0, 2.4, 2.8]}, {"type": "zzz", "x": 160, "y": 1300, "s": 80, "front": true}]
+stage       | auto | cut   | fast      | blew conch shells,                                    | whoosh@w2
+  > bg: lanka
+  > dusk: 0.4
+  > chars: [{"who": "soldier", "x": 300, "y": 1800, "h": 900, "pose": "taste", "conch": true, "expr": "stern"}, {"who": "soldier", "x": 760, "y": 1790, "h": 860, "pose": "taste", "conch": true, "expr": "stern", "phase": 1}]
+stage       | auto | cut   | fast      | and marched *elephants* over his body.                | thunk@w2 thunk@w4 thunk@w6
+  > bg: lanka
+  > dusk: 0.4
+  > chars: [{"who": "kumbha", "x": 1060, "y": 1700, "h": 1000, "rot": -1.5708, "pose": "down", "expr": "smile", "eyes": "closed"}]
+  > props: [{"type": "elephant", "x": 1150, "x2": 300, "y": 1545, "s": 340, "front": true}, {"type": "elephant", "x": 1500, "x2": 700, "y": 1545, "s": 310, "front": true, "phase": 1}, {"type": "zzz", "x": 140, "y": 1350, "s": 80, "front": true}]
+stage       | auto | cut   | fast      | He finally opened one eye...                          |
+  > bg: lanka
+  > dusk: 0.3
+  > chars: [{"who": "kumbha", "x": 540, "y": 2650, "h": 2000, "pose": "down", "expr": "neutral", "eyes": "closed", "switch": 0.9, "eyes2": "one"}]
+stage       | auto | cut   | fast      | and asked for !breakfast.!                            | punch@w4
+  > bg: lanka
+  > chars: [{"who": "kumbha", "x": 540, "y": 2650, "h": 2000, "pose": "point", "expr": "smile"}]
+  > props: [{"type": "text", "text": "ORDER: 1,000 PLATES", "x": 760, "y": 600, "s": 80, "rot": 0.1, "at": 0.8, "front": true}]
+problem     | auto | cut   | calm      | ~But.                                                 | punch@w1
+  > word: BUT.
+  > who: ""
+stage       | auto | cut   | calm      | When he heard / why the war started... / he got angry. | dramatic@w8
+  > bg: lanka
+  > fire: 0.4
+  > tint: red
+  > chars: [{"who": "kumbha", "x": 540, "y": 2650, "h": 2000, "pose": "down", "expr": "neutral", "switch": 2.4, "expr2": "stern"}]
+stage       | auto | cut   | calm      | Not at Rama. / At *Ravana.*                           |
+  > bg: lanka
+  > fire: 0.4
+  > chars: [{"who": "ravana", "x": 270, "y": 1790, "h": 820, "pose": "down", "expr": "neutral", "look": 1}, {"who": "kumbha", "x": 720, "y": 1880, "h": 1400, "pose": "down", "expr": "stern", "look": -0.8}]
+stage       | auto | cut   | calm      | "You stole another man's wife," he said. / "This war is !wrong.!" | punch@w10
+  > bg: lanka
+  > fire: 0.5
+  > tint: red
+  > chars: [{"who": "ravana", "x": 270, "y": 1790, "h": 820, "pose": "down", "expr": "shock", "look": 1}, {"who": "kumbha", "x": 720, "y": 1880, "h": 1400, "pose": "point", "expr": "stern", "look": -0.8}]
+  > cam: {"z": [1.0, 1.12], "x": [540, 520], "y": [1100, 1050]}
+stage       | auto | cut   | calm      | Ravana didn't listen.                                 |
+  > bg: lanka
+  > fire: 0.6
+  > chars: [{"who": "ravana", "x": 540, "y": 2600, "h": 1900, "pose": "down", "expr": "stern", "eyes": "closed"}]
+stage       | auto | fade  | heartbeat | And Kumbhakarna... / still picked up his weapon.      | impact@w6
+  > bg: lanka
+  > fire: 0.7
+  > dusk: 0.3
+  > chars: [{"who": "kumbha", "x": 540, "y": 1880, "h": 1300, "pose": "down", "expr": "sad", "switch": 1.6, "pose2": "mace", "expr2": "stern"}]
+stage       | auto | fade  | sad       | "You are wrong, brother," he said.                    |
+  > bg: lanka
+  > dusk: 0.45
+  > sun: {"y": 820, "r": 130, "rays": 0.4}
+  > chars: [{"who": "kumbha", "x": 540, "y": 2650, "h": 2000, "pose": "down", "expr": "sad", "eyes": "closed"}]
+stage       | auto | fade  | sad       | "But you are still my *brother.*"                     |
+  > bg: lanka
+  > dusk: 0.5
+  > sun: {"y": 900, "r": 110, "rays": 0.5, "ring": true}
+  > chars: [{"who": "ravana", "x": 300, "y": 1800, "h": 860, "pose": "down", "expr": "sad", "look": 1}, {"who": "kumbha", "x": 740, "y": 1880, "h": 1300, "pose": "namaste", "expr": "sad", "look": -0.7}]
+stage       | auto | fade  | sad       | He walked onto the battlefield alone... / and never woke up again. |
+  > bg: battlefield
+  > dusk: 0.55
+  > sun: {"x": 540, "y": 1090, "r": 90, "rays": 0.5}
+  > chars: [{"who": "kumbha", "x": 540, "y": 1500, "h": 640, "pose": "mace", "expr": "stern", "eyes": "closed"}]
+  > cam: {"z": [1.25, 1.0], "x": [540, 540], "y": [1250, 1100]}
+stage       | auto | fade  | sad       | He knew the right side. / He chose his *brother* anyway. |
+  > bg: lanka
+  > dusk: 0.65
+  > sun: {"x": 820, "y": 1080, "r": 70, "rays": 0.3}
+  > chars: []
+  > props: [{"type": "bed", "x": 540, "y": 1700, "s": 560}]
+review      | 3.4  | cut   | fast      | -                                                     | pop@0.4 pop@1.1 ding@2.0
+  > header: RATE MY ALARM CLOCK
+  > who: kumbha
+  > name: 1,000 DRUMS
+  > sub: royal wake-up service · Lanka
+  > rows: [[0.4, 1, "woke me up for THIS?", "Kumbhakarna"], [1.1, 5, "worth every elephant", "Ravana"]]

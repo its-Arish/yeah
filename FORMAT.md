@@ -85,3 +85,18 @@ boyYes  | 2.0  | cut   | fast | And the boy said *YES.*                   | punc
 - `stage` chars also accept `eyes2` (switches together with `pose2` / `expr2`).
 - `levelup` accepts `counter: {"label","from","to"}`, which replaces the target with a big ticking number.
 - `sign` accepts `who` (the character peeking from behind the post).
+
+### Added for Ramayana Ep 2 (Kumbhakarna)
+- **Characters:** `heads: 10` (Ravana's extra heads), `hair: "wild"` (spiky rakshasa hair) with `crown: true`, `fangs: true`, `stache: true`, `halo: true` (divine glow), `rot: -1.5708` (lying down, head to the left; sleeping giant), `eyes: "one"` (one eye open, works with `eyes2`).
+- **Poses:** `mace` (gada raised), `veena` (Saraswati's instrument). `taste` + `conch: true` = blowing a conch shell.
+- **Ready-made cast** (`episodes/kumbhakarna/episode.txt`): `kumbha`, `ravana`, `saraswati`, `indra`, `soldier`.
+- **`stage` backgrounds:** `bg: "lanka"` (golden city skyline) plus `fire: 0..1` (burning city).
+- **`stage` props:** `> props: [...]`. Each prop has `type`, `x`, `y`, `s` (size), and `front: true` to draw it over the characters.
+  - `elephant`: walks from `x` to `x2` over the shot.
+  - `drum`: pulses at the times in `hits: [sec, ...]`.
+  - `bed`.
+  - `zzz`: floating Z's.
+  - `text`: a sticker, using `text`, `rot`, and `at` for its pop-in time.
+  - `flash`: divine light burst at `at`.
+- **New scene `autocorrect`:** a search bar types `typed`, then shows "Did you mean: `suggest`?", then a `results` box. `header` sets the top label.
+- **`problem`:** long impact words now auto-fit the screen width.

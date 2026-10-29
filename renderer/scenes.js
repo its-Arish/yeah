@@ -240,7 +240,8 @@ const SCENES = {
     draw(lt, T) { burst(540, 960, T, '#d9533a', '#f08a4a', 22); },
     over(lt, T) {
       const s = easeBack(lt / 0.22) * (1 + 0.03 * Math.sin(lt * 40) * Math.exp(-lt * 3));
-      txt(D('word', 'PROBLEM.'), 540, 900, D('word', 'PROBLEM.').length > 9 ? 140 : 190, { fill: PAL.gold, stroke: PAL.ink, sw: 22, scale: s, rot: -0.05, shadow: 'rgba(0,0,0,0.5)', shadowBlur: 30 });
+      const wd = D('word', 'PROBLEM.'); ctx.font = '700 190px Pop'; const wfs = Math.min(190, 190 * 900 / ctx.measureText(wd).width);
+      txt(wd, 540, 900, wfs, { fill: PAL.gold, stroke: PAL.ink, sw: 22, scale: s, rot: -0.05, shadow: 'rgba(0,0,0,0.5)', shadowBlur: 30 });
       if (D('who', 'arjuna')) avatar(540, 1260, 130, D('who', 'arjuna'), T, { bg: '#2a3a6a', expr: 'shock' });
     }
   },
@@ -360,18 +361,37 @@ SCENES.stage = {
     const bg = D('bg', 'sunset'), dusk = D('dusk', 0), s = D('sun', {});
     const so = { dusk, sunX: s.x ?? 540, sunY: s.y ?? 1050, sunR: s.r ?? 90, rays: s.rays ?? 0.35, ring: s.ring, big: s.big, clear: true, seed: D('seed', 7) };
     if (bg === 'forest') forestBase(T, so);
+    else if (bg === 'lanka') {
+      sky({ dusk }); if (D('fire', 0)) { ctx.fillStyle = `rgba(200,40,20,${0.25 * D('fire', 0)})`; ctx.fillRect(-600, -600, W + 1200, 1800); }
+      sun(so.sunX, so.sunY, so.sunR, T, { rays: so.rays, ring: so.ring, big: so.big });
+      hills(HZ - 40, 50, shade(PAL.hillFar, -0.3), 3, 300);
+      lankaCity(HZ + 20, T, D('fire', 0)); ground(HZ + 10, { seed: D('seed', 7), dusk: Math.max(dusk, 0.2) });
+    }
     else {
       sunsetBase(T, Object.assign(so, { birds: bg !== 'battlefield' }));
       if (bg === 'ashram') { hut(150, HZ + 40, 1.3); hut(930, HZ + 30, 1.05); }
       if (bg === 'battlefield' || bg === 'ashram') banners(HZ + 18, T, { seed: D('seed', 7) });
       ground(HZ + 10, { seed: D('seed', 7), dusk });
     }
+    const props = D('props', []);
+    const drawProp = pr => {
+      const pk = pr.at != null ? Math.max(0, 1 - Math.abs(lt - pr.at) / 0.25) : 0;
+      const hit = pr.hits ? Math.max(0, ...pr.hits.map(h => lt >= h ? Math.max(0, 1 - (lt - h) / 0.3) : 0)) : pk;
+      if (pr.type === 'elephant') elephant(lerp(pr.x, pr.x2 ?? pr.x, ease(lt / (CUR.t1 - CUR.t0))), pr.y, pr.s || 300, T, pr);
+      if (pr.type === 'drum') drum(pr.x, pr.y, pr.s || 200, T, hit);
+      if (pr.type === 'bed') bed(pr.x, pr.y, pr.s || 500);
+      if (pr.type === 'zzz') for (let i = 0; i < 3; i++) { const ph = (lt * 0.6 + i / 3) % 1; txt('Z', pr.x + ph * 120 + i * 10, pr.y - ph * 260, (pr.s || 80) * (0.6 + ph), { fill: '#e9e2ff', stroke: '#2a1a3a', sw: 8, alpha: Math.sin(ph * Math.PI) }); }
+      if (pr.type === 'text') txt(pr.text, pr.x, pr.y, pr.s || 90, { fill: pr.fill || '#fff2c8', stroke: '#1a0e10', sw: 10, rot: pr.rot || 0, scale: pr.at != null ? (lt < pr.at ? 0 : easeBack((lt - pr.at) / 0.2)) : 1 });
+      if (pr.type === 'flash') { const a = pr.at != null ? Math.max(0, 1 - Math.abs(lt - pr.at) / 0.35) : 0.5; const g = ctx.createRadialGradient(pr.x, pr.y, 0, pr.x, pr.y, 900); g.addColorStop(0, `rgba(255,245,210,${a})`); g.addColorStop(1, 'rgba(255,245,210,0)'); ctx.fillStyle = g; ctx.fillRect(-300, -300, W + 600, H + 600); }
+    };
+    props.filter(pr => !pr.front).forEach(drawProp);
     for (const c of D('chars', [])) {
       const late = c.switch != null && lt > c.switch;
       const p = Object.assign({}, c, { pose: late && c.pose2 ? c.pose2 : c.pose, expr: late && c.expr2 ? c.expr2 : c.expr, eyes: late && c.eyes2 ? c.eyes2 : c.eyes });
       if (c.enter) { const k = easeOut(lt / c.enter); p.alpha = k; }
       drawPerson(c.x ?? 540, c.y ?? 1750, c.h ?? 1000, p, T);
     }
+    props.filter(pr => pr.front).forEach(drawProp);
     if (D('fireflies', 18)) fireflies(T, D('fireflies', 18), D('seed', 7));
   },
   over(lt, T) {
@@ -379,5 +399,36 @@ SCENES.stage = {
     if (D('flashback', false)) SCENES.promise.over(lt, T);
     if (D('title', null)) SCENES.title.over(lt, T);
     if (D('badge', null)) SCENES.noScratch.over(lt, T);
+  }
+};
+
+// ---------- autocorrect / search-bar meme ----------
+// > typed: Indrasana        > suggest: Nidrasana        > results: Showing results for: SLEEP
+SCENES.autocorrect = {
+  draw(lt, T) { sky({ dusk: 0.3 }); hills(HZ, 60, PAL.hillMid, 5, 300); ground(HZ); ctx.fillStyle = 'rgba(8,4,12,0.6)'; ctx.fillRect(-100, -100, W + 200, H + 200); },
+  over(lt, T) {
+    const d = CUR.t1 - CUR.t0, typed = D('typed', 'Indrasana'), sug = D('suggest', 'Nidrasana');
+    txt(D('header', 'BOON REQUEST'), 540, 330, 54, { fill: PAL.gold, stroke: '#1a0e10', sw: 8 });
+    rrect(80, 440, 920, 140, 70, '#f7f2e6'); circ(160, 510, 26, 'rgba(0,0,0,0)'); ctx.strokeStyle = '#8a7f78'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(155, 505, 22, 0, TAU); ctx.stroke(); stroke([[171, 521], [190, 540]], '#8a7f78', 7);
+    const n = Math.min(typed.length, Math.floor(lt / Math.min(0.09, d * 0.35 / typed.length)));
+    const shown = typed.slice(0, n);
+    txt(shown + (Math.floor(lt * 3) % 2 ? '|' : ''), 230, 512, 66, { align: 'left', fill: '#2a1a2a', weight: 500 });
+    if (n >= typed.length) {
+      ctx.font = '500 66px Pop'; const w = ctx.measureText(shown).width;
+      ctx.strokeStyle = '#e0322a'; ctx.lineWidth = 5; ctx.beginPath(); for (let x = 0; x <= w; x += 12) ctx.lineTo(230 + x, 556 + (x / 12 % 2 ? 6 : 0)); ctx.stroke();
+    }
+    const at = Math.min(d * 0.45, typed.length * 0.09 + 0.3);
+    if (lt > at) {
+      const k = easeBack((lt - at) / 0.25);
+      ctx.save(); ctx.translate(540, 760); ctx.scale(k, k);
+      txt('Did you mean:', 0, -40, 50, { fill: '#cfc4dc', weight: 500 });
+      txt(sug + '?', 0, 60, 120, { fill: '#ff5a4a', stroke: '#1a0e10', sw: 12 });
+      ctx.restore();
+    }
+    const at2 = Math.min(d * 0.75, at + 0.9);
+    if (lt > at2 && D('results', null)) {
+      rrect(110, 980, 860, 260, 30, 'rgba(30,20,40,0.92)'); ctx.strokeStyle = PAL.gold; ctx.lineWidth = 4; ctx.stroke();
+      txt(D('results', ''), 540, 1110, 46, { fill: '#fff' });
+    }
   }
 };
