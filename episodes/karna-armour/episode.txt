@@ -1,0 +1,45 @@
+title: Why Karna gave away his golden armour
+fps: 30
+# New characters: start from a built-in one ("base") and override colours/parts.
+cast: {"karna": {"base": "arjuna", "dhoti": "#a8322a", "skin": "#b97a50", "top": "armour"}, "indra": {"base": "drona", "dhoti": "#e9e2d0", "skin": "#d09a70", "tilak": "red"}}
+
+# scene  | secs | in    | mood | captions                                         | fx
+stage    | 3.0  | black | fast | *KARNA* was born / with !UNBREAKABLE! armour.     | riser_short@0
+  > title: MAHABHARATA
+  > bg: battlefield
+  > sun: {"rays": 0.5}
+  > chars: [{"who": "karna", "x": 540, "y": 1820, "h": 1150, "pose": "holdbow", "expr": "neutral"}]
+levelup  | 2.6  | cut   | fast | Literally *GOD MODE.*                            | levelup@0.2 thunk@0.6 thunk@1.1 thunk@1.6 stamp@2.2
+  > who: karna
+  > header: PASSIVE UNLOCKED
+  > skill: KAVACHA
+  > sub: CANNOT BE KILLED · BORN WITH IT
+  > stamp: OP
+stage    | 3.0  | cut   | fast | So *INDRA* came / disguised as a beggar.          |
+  > bg: ashram
+  > chars: [{"who": "indra", "x": 300, "y": 1750, "h": 950, "pose": "offer", "expr": "smile", "look": 0.7}, {"who": "karna", "x": 770, "y": 1760, "h": 1000, "pose": "namaste", "expr": "neutral", "look": -0.6}]
+chat     | 3.4  | cut   | fast | He asked for / the armour.                        | pop@0.3 pop@1.1 pop@1.9 stamp@2.5
+  > channel: #charity-hour
+  > messages: [[0.3, "indra", "TOTALLY A BEGGAR", "hi can i have ur armour"], [1.1, "karna", "KARNA", "you're Indra."], [1.9, "indra", "TOTALLY A BEGGAR", "...pls"]]
+  > typer: Totally a beggar
+  > left: ""
+  > stamp: SUS
+  > stampAt: 2.5
+problem  | 1.4  | cut   | calm | -                                                | punch@0
+  > word: HE KNEW.
+  > who: karna
+stage    | 3.4  | fade  | sad  | He cut it from his own body / and gave it anyway. |
+  > bg: forest
+  > dusk: 0.4
+  > sun: {"y": 880, "r": 150, "rays": 0.8, "ring": true}
+  > chars: [{"who": "karna", "x": 540, "y": 1950, "h": 1600, "kneel": true, "pose": "offer", "leaf": true, "expr": "sad", "eyes": "closed"}]
+stage    | 3.2  | fade  | sad  | Because *KARNA* never said no / to anyone who asked. |
+  > bg: battlefield
+  > sun: {"y": 760, "r": 130, "rays": 0.6, "ring": true}
+  > chars: [{"who": "karna", "x": 540, "y": 2600, "h": 2000, "pose": "namaste", "expr": "smile"}]
+review   | 3.0  | cut   | fast | -                                                | pop@0.4 pop@1.1 ding@2.0
+  > header: RATE MY DONOR
+  > who: karna
+  > name: KARNA
+  > sub: donor · gives literally anything
+  > rows: [[0.4, 5, "gave me his armour, zero questions", "Indra (not a beggar)"], [1.1, 1, "refused to switch teams", "Kunti"]]

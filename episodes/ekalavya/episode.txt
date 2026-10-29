@@ -1,0 +1,44 @@
+title: Why Ekalavya gave his thumb away
+fps: 30
+
+# scene     | secs | in    | mood      | captions  (/ = new line, *gold*, !red!)                   | fx (name@sec-into-shot)
+title       | 3.2  | black | fast      | A teacher asked a boy / for his !THUMB.!                   | riser_short@0
+  > title: MAHABHARATA
+boyYes      | 2.0  | cut   | fast      | And the boy said *YES.*                                    | punch@0.75
+drona       | 3.0  | cut   | fast      | *DRONA* was the greatest / archery teacher alive.          |
+sign        | 2.4  | cut   | fast      | But he only taught *PRINCES.*                              |
+  > small: DRONACHARYA'S|ARCHERY ACADEMY
+  > big: PRINCES|ONLY!
+  > scribble: no forest kids
+chat        | 4.0  | cut   | fast      | A forest boy named *EKALAVYA* / asked to join. !REJECTED.! | pop@0.3 pop@1.0 pop@1.7 pop@2.3 stamp@2.9
+  > channel: #ashram-admissions
+  > messages: [[0.3,"eka","EKALAVYA","sir can i join ur archery class pls"],[1.0,"drona","DRONACHARYA","which kingdom r u from"],[1.7,"eka","EKALAVYA","the forest"],[2.3,"drona","DRONACHARYA","no."]]
+  > typer: Dronacharya
+  > left: DRONACHARYA
+  > stamp: REJECTED
+clay        | 3.4  | fade  | fast      | So he went home, / built a clay *DRONA...*                 |
+practice    | 2.4  | cut   | fast      | And taught himself.                                        | arrow@1.3
+levelup     | 2.8  | cut   | fast      | Every day. For years.                                      | levelup@0.2 thunk@0.6 thunk@1.1 thunk@1.6 stamp@2.2
+  > skill: ARCHERY
+  > stamp: SELF-TAUGHT
+dog         | 3.8  | cut   | fast      | One day a dog kept barking. / *SEVEN* arrows shut its mouth. | bark@0.3 bark@0.9 bark@1.4 arrows7@1.9
+noScratch   | 2.0  | cut   | fast      | Without a single scratch.                                  | ding@0.3
+  > badge: 0 SCRATCHES
+arjuna      | 2.8  | cut   | fast      | *ARJUNA* saw it. / *DRONA'S* favourite student.            | dramatic@0.3
+promise     | 2.6  | fade  | fast      | He was promised / no one would beat him.                   | riser@1.2
+problem     | 1.4  | cut   | calm      | -                                                          | punch@0
+  > word: PROBLEM.
+  > who: arjuna
+meet        | 3.6  | cut   | calm      | *DRONA* found the boy. / "Who is your teacher?"            |
+youAre      | 2.2  | cut   | calm      | "You are, *GURUDEV."*                                      |
+fee         | 3.2  | cut   | calm      | "Then pay my fee." / "Your right !THUMB."!                 | punch@1.65
+hand        | 2.8  | fade  | heartbeat | No archer can shoot without it.                            |
+offer       | 3.2  | fade  | sad       | *EKALAVYA* didn't hesitate.                                |
+bowdown     | 3.0  | fade  | sad       | He placed it / at his teacher's feet.                      |
+legend      | 4.4  | fade  | sad       | *ARJUNA* became a legend. / But the forest remembers / who was *BETTER.* |
+review      | 3.3  | cut   | fast      | -                                                          | pop@0.4 pop@1.1 pop@1.8 ding@2.4
+  > header: RATE MY GURU
+  > who: drona
+  > name: DRONACHARYA
+  > sub: archery teacher · 4.0 avg
+  > rows: [[0.4,1,"asked for my thumb as a fee","Ekalavya, self-taught"],[1.1,5,"10/10 would be favourite again","Arjuna"],[1.8,3,"mmmf","the dog"]]

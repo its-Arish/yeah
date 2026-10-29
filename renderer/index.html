@@ -1,0 +1,104 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face { font-family: Pop; src: url(fonts/Poppins-Bold.ttf); font-weight: 700; }
+@font-face { font-family: Pop; src: url(fonts/Poppins-Medium.ttf); font-weight: 500; }
+@font-face { font-family: LoraB; src: url(fonts/Lora-Variable.ttf); font-weight: 400 700; }
+@font-face { font-family: LoraI; src: url(fonts/Lora-Italic-Variable.ttf); font-weight: 400 700; }
+html, body { margin: 0; background: #000; }
+canvas { display: block; }
+</style></head>
+<body>
+<canvas id="c" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script src="scenes.js"></script>
+<script>
+let TL = null;
+const BUF = document.createElement('canvas'); BUF.width = W; BUF.height = H;
+
+function camAt(shot, lt) {
+  const d = shot.t1 - shot.t0, p = ease(lt / d), c = shot.cam;
+  let z = lerp(c.z[0], c.z[1], p), x = lerp(c.x[0], c.x[1], p), y = lerp(c.y[0], c.y[1], p), sx = 0, sy = 0, flash = 0;
+  if (shot.in === 'cut' && lt < 0.22) { z *= 1 + 0.07 * (1 - easeOut(lt / 0.22)); flash = Math.max(flash, 0.3 * (1 - lt / 0.12)); }
+  for (const pt of shot.punch || []) {
+    const k = shot.t0 + lt - pt;
+    if (k >= 0 && k < 0.45) { const f = 1 - easeOut(k / 0.45); z *= 1 + 0.1 * f; sx += Math.sin(k * 90) * 22 * f; sy += Math.cos(k * 77) * 18 * f; flash = Math.max(flash, 0.45 * (1 - k / 0.15)); }
+  }
+  return { z, x, y, sx, sy, flash };
+}
+
+function drawShot(target, shot, t) {
+  const old = ctx; // scenes draw with global ctx; swap canvases by redirecting
+  const lt = t - shot.t0, d = shot.t1 - shot.t0, sc = SCENES[shot.scene];
+  if (!sc) throw new Error('Unknown scene: ' + shot.scene);
+  CUR = shot;
+  const cam = camAt(shot, lt);
+  target.save();
+  target.setTransform(1, 0, 0, 1, 0, 0);
+  target.translate(W / 2 + cam.sx, H / 2 + cam.sy); target.scale(cam.z, cam.z); target.translate(-cam.x, -cam.y);
+  withCtx(target, () => sc.draw(lt, t, d));
+  target.restore();
+  target.save(); target.setTransform(1, 0, 0, 1, 0, 0);
+  withCtx(target, () => { grainAndVignette(t, 0.5); if (sc.over) sc.over(lt, t, d); });
+  if (cam.flash > 0) { target.fillStyle = `rgba(255,248,230,${clamp(cam.flash)})`; target.fillRect(0, 0, W, H); }
+  target.restore();
+}
+let _ctx = ctx;
+function withCtx(c, fn) { const prev = window.ctxRef; ctxSwap(c); try { fn(); } finally { ctxSwap(prev || C.getContext('2d')); } }
+function ctxSwap(c) { ctx = c; }
+
+function drawCaptions(t) {
+  const cap = TL.captions.find(c => t >= c.t0 && t < c.t1);
+  if (!cap) return;
+  const words = cap.text.split(' '), n = words.length, dur = cap.t1 - cap.t0;
+  const step = Math.min(0.2, dur * 0.7 / n);
+  const size = 78; ctx.font = `700 ${size}px Pop`;
+  const space = ctx.measureText(' ').width, maxW = 940;
+  const lines = [[]]; let lw = 0;
+  words.forEach(w => { const ww = ctx.measureText(w).width; if (lw + ww > maxW && lines[lines.length - 1].length) { lines.push([]); lw = 0; } lines[lines.length - 1].push({ w, ww }); lw += ww + space; });
+  const lh = 96, baseY = 1335 - (lines.length - 1) * lh / 2;
+  const fadeOut = clamp((cap.t1 - t) / 0.08);
+  let idx = 0;
+  lines.forEach((ln, li) => {
+    const total = ln.reduce((a, b) => a + b.ww, 0) + space * (ln.length - 1);
+    let x = W / 2 - total / 2;
+    ln.forEach(({ w, ww }) => {
+      const wt = cap.t0 + idx * step; idx++;
+      if (t >= wt) {
+        const k = clamp((t - wt) / 0.13), s = 1 + 0.32 * (1 - easeOut(k));
+        const hl = cap.hl && cap.hl[w];
+        const fill = hl === 'gold' ? '#ffcf4a' : hl === 'red' ? '#ff4a3d' : '#ffffff';
+        ctx.save(); ctx.translate(x + ww / 2, baseY + li * lh); ctx.scale(s, s); ctx.globalAlpha = clamp(k * 3) * fadeOut;
+        ctx.font = `700 ${size}px Pop`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.lineJoin = 'round'; ctx.strokeStyle = '#120812'; ctx.lineWidth = 16; ctx.strokeText(w, 0, 0);
+        ctx.shadowColor = hl ? fill : 'rgba(0,0,0,0)'; ctx.shadowBlur = hl ? 22 : 0;
+        ctx.fillStyle = fill; ctx.fillText(w, 0, 0);
+        ctx.restore();
+      }
+      x += ww + space;
+    });
+  });
+}
+
+function render(t) {
+  const main = C.getContext('2d');
+  main.setTransform(1, 0, 0, 1, 0, 0); main.fillStyle = '#000'; main.fillRect(0, 0, W, H);
+  const shots = TL.shots;
+  let i = shots.findIndex(s => t >= s.t0 && t < s.t1); if (i < 0) i = shots.length - 1;
+  const shot = shots[i], lt = t - shot.t0;
+  const FADE = 0.5;
+  if (shot.in === 'fade' && lt < FADE && i > 0) {
+    drawShot(main, shots[i - 1], t);
+    const b = BUF.getContext('2d'); b.setTransform(1, 0, 0, 1, 0, 0); b.clearRect(0, 0, W, H);
+    drawShot(b, shot, t);
+    main.globalAlpha = ease(lt / FADE); main.drawImage(BUF, 0, 0); main.globalAlpha = 1;
+  } else drawShot(main, shot, t);
+  if (shot.in === 'black' && lt < 0.6) { main.fillStyle = `rgba(0,0,0,${1 - ease(lt / 0.6)})`; main.fillRect(0, 0, W, H); }
+  ctxSwap(main); drawCaptions(t);
+  const end = TL.duration - t; if (end < 0.4) { main.fillStyle = `rgba(0,0,0,${1 - end / 0.4})`; main.fillRect(0, 0, W, H); }
+}
+window.setTL = j => { TL = j; if (j.cast) for (const [k, v] of Object.entries(j.cast)) CHAR[k] = Object.assign({}, CHAR[v.base] || {}, v); };
+window.ready = async () => { await document.fonts.load('700 40px Pop'); await document.fonts.load('500 40px Pop'); await document.fonts.load('700 40px LoraB'); await document.fonts.load('700 40px LoraI'); return true; };
+window.frame = (t, q) => { render(t); return C.toDataURL('image/jpeg', q || 0.92); };
+</script>
+</body></html>
