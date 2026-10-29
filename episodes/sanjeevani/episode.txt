@@ -1,0 +1,152 @@
+title: He couldn't find the medicine, so he brought the mountain
+fps: 30
+vo: vo.wav
+vo_align: vo_align.json
+cast: {"rama": {"base": "arjuna", "skin": "#4a78c0", "hair": "jata", "top": "bare", "dhoti": "#e3a92e", "border": "#c8452f", "neck": "mala", "tilak": "red", "quiver": true}, "lakshmana": {"base": "arjuna", "skin": "#d39b6e", "hair": "jata", "top": "bare", "dhoti": "#c8602a", "border": "#f2c14e", "neck": "mala", "tilak": "red", "quiver": true}, "hanuman": {"base": "arjuna", "monkey": true, "hair": "fur", "mukut": true, "skin": "#c98a4a", "muzzleCol": "#f2d6ae", "top": "bare", "dhoti": "#d9441f", "border": "#f2c14e", "neck": "gold", "tilak": "red", "quiver": false}, "sushena": {"base": "prince", "monkey": true, "hair": "fur", "old": true, "skin": "#9a8672", "muzzleCol": "#e6dccb", "top": "bare", "dhoti": "#2f6a4a", "border": "#c9a26a", "neck": "mala", "quiver": false}, "ravana": {"base": "arjuna", "heads": 10, "skin": "#9a6a52", "stache": true, "top": "armour", "dhoti": "#4a1a5a", "border": "#f2c14e", "quiver": false}}
+
+# scene    | secs | in    | mood      | captions                                              | fx
+stage      | auto | black | fast      | When he couldn't find the right medicine...           | riser_short@0
+  > title: RAMAYANA
+  > bg: himalaya
+  > fireflies: 30
+  > chars: [{"who": "hanuman", "x": 540, "y": 1850, "h": 1150, "pose": "shock", "expr": "shock"}]
+stage      | auto | cut   | fast      | he brought back the *whole mountain.*                 | punch@w5
+  > bg: night
+  > fireflies: 0
+  > chars: [{"who": "hanuman", "x": 280, "x2": 360, "y": 1330, "y2": 1260, "h": 760, "rot": 0.45, "pose": "lift", "expr": "smile"}]
+stage      | auto | cut   | calm      | *Lakshmana* was dying.                                | dramatic@w1
+  > bg: night
+  > banners: true
+  > fireflies: 0
+  > chars: [{"who": "lakshmana", "x": 1000, "y": 1680, "h": 960, "rot": -1.5708, "pose": "down", "expr": "sad", "eyes": "closed"}]
+stage      | auto | cut   | calm      | Struck by *Ravana's* spear in battle.                 | impact@w4
+  > bg: night
+  > tint: red
+  > fireflies: 0
+  > chars: [{"who": "ravana", "x": 540, "y": 2550, "h": 1900, "pose": "point", "expr": "stern"}]
+  > props: [{"type": "slash", "x": 540, "y": 900, "at": 0.9, "front": true}]
+stage      | auto | cut   | calm      | Rama held his brother / and *wept.*                   |
+  > bg: night
+  > fireflies: 0
+  > moon: true
+  > chars: [{"who": "lakshmana", "x": 1040, "y": 1840, "h": 900, "rot": -1.5708, "pose": "down", "expr": "sad", "eyes": "closed"}, {"who": "rama", "x": 640, "y": 1960, "h": 1400, "kneel": true, "pose": "offer", "expr": "sad", "eyes": "closed", "tear": true}]
+stage      | auto | cut   | calm      | The army's doctor, *Sushena*, said:                   |
+  > bg: night
+  > fireflies: 0
+  > chars: [{"who": "rama", "x": 300, "y": 1760, "h": 980, "pose": "namaste", "expr": "sad", "look": 0.8}, {"who": "sushena", "x": 760, "y": 1760, "h": 900, "pose": "offer", "leaf": true, "expr": "neutral", "look": -0.8}]
+stage      | auto | cut   | calm      | "There's only *one cure.*"                            |
+  > bg: night
+  > fireflies: 0
+  > chars: [{"who": "sushena", "x": 540, "y": 2550, "h": 1900, "pose": "offer", "leaf": true, "expr": "neutral"}]
+chat       | auto | cut   | fast      | "The *Sanjeevani* herb. / It grows on a mountain in the Himalayas." | pop@0.1 pop@0.8 pop@1.5 pop@2.2
+  > channel: #vanara-army
+  > messages: [[0.1, "sushena", "SUSHENA", "need Sanjeevani herb. urgent"], [0.8, "hanuman", "HANUMAN", "where?"], [1.5, "sushena", "SUSHENA", "Himalayas"], [2.2, "hanuman", "HANUMAN", "say less"]]
+  > typer: Hanuman
+  > left: ""
+  > stamp: ""
+countdown  | auto | cut   | fast      | "Bring it before !sunrise...!"                        | dramatic@w1
+  > label: SUNRISE IN
+  > from: 21600
+  > to: 21520
+  > sub: LAKSHMANA'S LIFE ON THE CLOCK
+stage      | auto | cut   | calm      | "or he won't wake up."                                |
+  > bg: night
+  > fireflies: 0
+  > chars: [{"who": "lakshmana", "x": 540, "y": 2600, "h": 2000, "pose": "down", "expr": "sad", "eyes": "closed"}]
+map        | auto | cut   | fast      | The Himalayas were *thousands of miles* away.         | stamp@w6
+  > from: LANKA
+  > to: HIMALAYAS
+  > distance: ~3,000 KM
+  > stamp: ETA: IMPOSSIBLE
+  > stampAt: 1.8
+stage      | auto | cut   | fast      | Only one warrior could make it in one night.          |
+  > bg: night
+  > banners: true
+  > fireflies: 0
+  > chars: [{"who": "sushena", "x": 200, "y": 1720, "h": 760, "pose": "down", "expr": "neutral", "look": 1}, {"who": "rama", "x": 420, "y": 1720, "h": 820, "pose": "down", "expr": "sad", "look": 1}, {"who": "hanuman", "x": 800, "y": 1780, "h": 1050, "pose": "mace", "expr": "stern", "enter": 0.6}]
+stage      | auto | cut   | fast      | *Hanuman.*                                            | punch@w1
+  > bg: night
+  > fireflies: 0
+  > chars: [{"who": "hanuman", "x": 540, "y": 2600, "h": 2000, "pose": "mace", "expr": "stern"}]
+stage      | auto | cut   | fast      | He leapt into the sky / and flew *north.*             | whoosh@w2
+  > bg: night
+  > fireflies: 0
+  > chars: [{"who": "hanuman", "x": 160, "x2": 250, "y": 1380, "y2": 1260, "h": 850, "rot": 0.7, "pose": "fly", "expr": "stern"}]
+stage      | auto | cut   | fast      | He found the mountain.                                | thunk@w1
+  > bg: himalaya
+  > fireflies: 30
+  > chars: [{"who": "hanuman", "x": 300, "y": 1880, "h": 900, "pose": "down", "expr": "smile", "look": 1}]
+  > props: [{"type": "mountain", "x": 720, "y": 1700, "s": 700}]
+stage      | auto | cut   | fast      | And then... a *problem.*                              | dramatic@w4
+  > bg: himalaya
+  > fireflies: 0
+  > chars: [{"who": "hanuman", "x": 540, "y": 2600, "h": 2000, "pose": "down", "expr": "smile", "switch": 1.0, "expr2": "shock"}]
+stage      | auto | cut   | fast      | Every single plant on it / was *glowing.*             | ding@w6
+  > bg: himalaya
+  > fireflies: 40
+  > chars: []
+  > props: [{"type": "mountain", "x": 540, "y": 1800, "s": 1100}]
+autocorrect | auto | cut  | fast      | Which one was the medicine? / He had *no idea.*       | pop@w3 stamp@w8
+  > header: HANUMAN'S PHONE
+  > typed: which glowing plant is sanjeevani
+  > suggest: all of them
+  > results: 0 results. Good luck.
+stage      | auto | cut   | fast      | So Hanuman did / what any reasonable monkey would do. |
+  > bg: himalaya
+  > fireflies: 0
+  > chars: [{"who": "hanuman", "x": 540, "y": 2600, "h": 2000, "pose": "down", "expr": "neutral"}]
+  > cam: {"z": [1.0, 1.25], "x": [540, 540], "y": [960, 860]}
+levelup    | auto | cut   | fast      | He picked up / the *entire mountain.*                 | levelup@0.1 impact@w5
+  > who: hanuman
+  > header: STRENGTH UNLOCKED
+  > skill: STRENGTH
+  > sub: CARRY CAPACITY: 1 MOUNTAIN
+  > counter: {"label": "MOUNTAINS LIFTED", "from": 0, "to": 1}
+  > stamp: OP
+stage      | auto | cut   | fast      | And carried it across the sky / in *one hand.*       | whoosh@w1
+  > bg: night
+  > fireflies: 0
+  > chars: [{"who": "hanuman", "x": 270, "x2": 350, "y": 1340, "y2": 1270, "h": 780, "rot": 0.45, "pose": "lift", "expr": "smile"}]
+stage      | auto | cut   | fast      | And landed in Lanka / just before *sunrise.*          | impact@w2
+  > bg: dawn
+  > fireflies: 0
+  > sun: {"x": 820, "r": 90, "rays": 0.4}
+  > chars: [{"who": "hanuman", "x": 540, "y": 1850, "h": 1200, "pose": "lift", "expr": "smile"}]
+stage      | auto | cut   | calm      | Sushena found the herb.                               | ding@w3
+  > bg: dawn
+  > fireflies: 0
+  > sun: {"x": 820, "r": 100, "rays": 0.5}
+  > chars: [{"who": "sushena", "x": 540, "y": 2550, "h": 1900, "pose": "offer", "leaf": true, "expr": "smile"}]
+stage      | auto | cut   | calm      | *Lakshmana opened his eyes.*                          | ding@w4
+  > bg: dawn
+  > fireflies: 0
+  > sun: {"x": 820, "r": 100, "rays": 0.5}
+  > chars: [{"who": "lakshmana", "x": 540, "y": 2600, "h": 2000, "pose": "down", "expr": "neutral", "eyes": "closed", "switch": 0.9, "eyes2": "open", "expr2": "smile"}]
+stage      | auto | fade  | sad       | And Rama hugged Hanuman / like a *brother.*           |
+  > bg: dawn
+  > fireflies: 0
+  > sun: {"x": 540, "r": 130, "rays": 0.8, "ring": true}
+  > chars: [{"who": "rama", "x": 400, "y": 1800, "h": 1050, "pose": "namaste", "expr": "smile", "eyes": "closed", "tear": true}, {"who": "hanuman", "x": 690, "y": 1800, "h": 1020, "pose": "namaste", "expr": "smile", "eyes": "closed"}]
+stage      | auto | fade  | sad       | Because when someone you love is in danger...         |
+  > bg: dawn
+  > fireflies: 0
+  > sun: {"x": 820, "r": 110, "rays": 0.6}
+  > chars: [{"who": "rama", "x": 250, "y": 1760, "h": 800, "pose": "down", "expr": "smile"}, {"who": "lakshmana", "x": 450, "y": 1760, "h": 780, "pose": "down", "expr": "smile", "phase": 1}]
+  > props: [{"type": "mountain", "x": 800, "y": 1700, "s": 700, "glow": 0.6}]
+stage      | auto | fade  | sad       | you don't search for the right leaf.                  |
+  > bg: dawn
+  > fireflies: 0
+  > sun: {"x": 300, "r": 120, "rays": 0.6}
+  > chars: [{"who": "sushena", "x": 540, "y": 2300, "h": 1500, "pose": "offer", "leaf": true, "expr": "smile"}]
+  > cam: {"z": [1.1, 1.35], "x": [540, 540], "y": [1300, 1420]}
+stage      | auto | cut   | sad       | You bring the *whole mountain.*                       | impact@w4
+  > bg: dawn
+  > fireflies: 0
+  > sun: {"x": 540, "r": 140, "rays": 0.9, "ring": true, "big": true}
+  > chars: [{"who": "hanuman", "x": 540, "y": 2600, "h": 2000, "pose": "lift", "expr": "smile"}]
+review     | 3.4  | cut   | fast      | -                                                     | pop@0.4 pop@1.1 ding@2.0
+  > header: RATE MY DELIVERY
+  > who: hanuman
+  > name: HANUMAN EXPRESS
+  > sub: overnight · any distance · any size
+  > rows: [[0.4, 5, "ordered one herb, got a mountain", "Lakshmana"], [1.1, 4, "still had to search the whole mountain", "Sushena"]]

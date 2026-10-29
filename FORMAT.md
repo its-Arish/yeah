@@ -113,3 +113,15 @@ boyYes  | 2.0  | cut   | fast | And the boy said *YES.*                   | punc
 - **Ready-made cast:** `sita`, `dasharatha` (see `episodes/jatayu/episode.txt`). `who: "vulture"` works in chat, level-up, problem and VS avatars.
 - **New scene `versus`:** a fighting-game VS screen. `left` / `right` take `{"who", "name", "sub"}`; "FIGHT!" replaces "VS" at `fightAt`.
 - **Level-up counters** now show thousands separators (60,000).
+
+### Added for Ramayana Ep 4 (Sanjeevani)
+- **Characters:**
+  - `monkey: true`: vanara face (muzzle, mask, round ears, tail). `muzzleCol` sets the muzzle colour.
+  - `hair: "fur"`: fur cap. `mukut: true` adds the tall crown to any hair style.
+  - Ready-made cast: `hanuman`, `sushena` (see `episodes/sanjeevani/episode.txt`).
+- **Poses:** `lift` (one hand raised, carrying a glowing mountain) and `fly` (arm forward). Combine either with `rot` for flight; about 0.45–0.7 keeps everything in frame.
+- **`stage` backgrounds:** `night` (stars + moon; add `banners: true` for a camp), `himalaya` (snowy peaks), `dawn` (night sky turning to sunrise). `moon: false` hides the moon.
+- **`stage` props:** `mountain` (glowing Sanjeevani peak; `glow` 0–1).
+- **New scenes:**
+  - `countdown`: big red timer. `label`, `from` / `to` in seconds, `sub`.
+  - `map`: India map with a dotted route from Lanka to the Himalayas. `from`, `to`, `distance`, `stamp`, `stampAt`.

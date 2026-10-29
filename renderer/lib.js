@@ -156,6 +156,8 @@ const POSES = {
   shoulderbow: { L: [[-14, -71], [-18, -60], [-17.5, -48]], R: [[14, -71], [20, -64], [12, -73]], bow: 'shoulder' },
   shock: { L: [[-14, -71], [-22, -66], [-18, -79]], R: [[14, -71], [22, -66], [18, -79]] },
   taste: { L: [[-14, -71], [-15, -59], [-7, -55]], R: [[14, -71], [17, -70], [5, -79.5]], hands: 'taste' },
+  lift: { L: [[-14, -71], [-18, -60], [-17.5, -48]], R: [[14, -71], [26, -84], [24, -100]], hands: 'lift' },
+  fly: { L: [[-14, -71], [-25, -80], [-34, -91]], R: [[14, -71], [18, -60], [17.5, -48]], hands: 'fly' },
   sword: { L: [[-14, -71], [-18, -60], [-17.5, -48]], R: [[14, -71], [24, -82], [22, -95]], hands: 'sword' },
   mace: { L: [[-14, -71], [-18, -60], [-17.5, -48]], R: [[14, -71], [24, -80], [20, -93]], hands: 'mace' },
   veena: { L: [[-14, -71], [-19, -62], [-9, -66]], R: [[14, -71], [17, -60], [8, -56]], hands: 'veena' },
@@ -199,6 +201,7 @@ function drawPerson(x, y, h, p, t = 0) {
 
   ctx.save(); ctx.translate(0, ky + br * 0.25);
   // back hair, quiver
+  if (p.monkey) { ctx.beginPath(); ctx.moveTo(6, -50); ctx.bezierCurveTo(30, -52 + Math.sin(t * 2) * 2, 34, -80, 24, -96); ctx.quadraticCurveTo(20, -104, 27, -106); ctx.strokeStyle = col(shade(p.skin, -0.15)); ctx.lineWidth = 3.4; ctx.lineCap = 'round'; ctx.stroke(); }
   if (p.halo) { const hg = ctx.createRadialGradient(0, -88, 8, 0, -88, 26); hg.addColorStop(0, 'rgba(255,236,170,0.9)'); hg.addColorStop(0.55, 'rgba(255,214,120,0.45)'); hg.addColorStop(1, 'rgba(255,214,120,0)'); ctx.fillStyle = hg; ctx.fillRect(-30, -118, 60, 60); ctx.beginPath(); ctx.arc(0, -88, 15, 0, TAU); ctx.strokeStyle = col('#ffe08a'); ctx.lineWidth = 1.2; ctx.stroke(); }
   if (p.hair === 'wild') { ctx.fillStyle = col('#140c10'); ctx.beginPath(); for (let i = 0; i <= 18; i++) { const a = Math.PI * 0.95 + i / 18 * Math.PI * 1.1, r = i % 2 ? 13 : 18.5; ctx.lineTo(Math.cos(a) * r, -88 + Math.sin(a) * r * 0.95); } ctx.lineTo(13, -70); ctx.lineTo(-13, -70); ctx.closePath(); ctx.fill(); }
   if (p.quiver) { ctx.save(); ctx.translate(10, -74); ctx.rotate(0.45); rrect(-3.5, -16, 7, 30, 2, col('#6b3a22')); ctx.fillStyle = col('#b8863a'); ctx.fillRect(-3.5, -16, 7, 2); for (let i = 0; i < 4; i++) { stroke([[-2 + i * 1.4, -16], [-2 + i * 1.4, -22]], col('#ddd'), 0.8); poly([[-3 + i * 1.4, -22], [-1 + i * 1.4, -22], [-2 + i * 1.4, -26]], col(i % 2 ? '#c8452f' : '#eee')); } ctx.restore(); }
@@ -256,6 +259,8 @@ function drawPerson(x, y, h, p, t = 0) {
   setRim(false);
   fillE(-8.6, -87, 1.6, 2.6, skinD); fillE(8.6, -87, 1.6, 2.6, skinD);
   fillE(0, -82, 6.5, 3.5, col(shade(p.skin, -0.06)));
+  const muz = col(p.muzzleCol || '#efd2a8');
+  if (p.monkey) { fillE(-10.3, -88, 2.8, 3.6, skinD); fillE(10.3, -88, 2.8, 3.6, skinD); fillE(-10.3, -88, 1.5, 2.2, muz); fillE(10.3, -88, 1.5, 2.2, muz); ctx.beginPath(); ctx.moveTo(0, -84); ctx.bezierCurveTo(-9, -82, -8.6, -92, -3.6, -91.2); ctx.quadraticCurveTo(0, -90, 3.6, -91.2); ctx.bezierCurveTo(8.6, -92, 9, -82, 0, -84); ctx.fillStyle = muz; ctx.fill(); }
   // earrings
   circ(-8.9, -83.4, 1.7, gold); circ(8.9, -83.4, 1.7, gold); circ(-8.9, -83.4, 0.7, col('#c8452f')); circ(8.9, -83.4, 0.7, col('#c8452f'));
   // face
@@ -280,6 +285,7 @@ function drawPerson(x, y, h, p, t = 0) {
   const lip = col('#7a2f26');
   if (ex === 'shock') fillE(0, -79.4, 1.4, 1.9, col('#3a1410'));
   else { const cy = ex === 'smile' ? -78.4 : ex === 'sad' || ex === 'stern' ? -80.4 : -79.5; const ey = ex === 'sad' ? -79.2 : -79.8; ctx.beginPath(); ctx.moveTo(-2.2, ey); ctx.quadraticCurveTo(0, cy, 2.2, ey); ctx.strokeStyle = lip; ctx.lineWidth = 0.9; ctx.stroke(); }
+  if (p.monkey) { fillE(0, -80.6, 6.4, 4.6, muz); circ(-1.1, -82.6, 0.55, col('#3a2014')); circ(1.1, -82.6, 0.55, col('#3a2014')); ctx.beginPath(); ctx.moveTo(-3.2, -79.4); ctx.quadraticCurveTo(0, ex === 'smile' ? -77.2 : ex === 'sad' ? -80.2 : -78.6, 3.2, -79.4); ctx.strokeStyle = col('#7a2f26'); ctx.lineWidth = 0.8; ctx.stroke(); if (ex === 'shock') fillE(0, -78.8, 1.6, 1.8, col('#3a1410')); }
   if (p.stache) { ctx.beginPath(); ctx.moveTo(0, -81.6); ctx.bezierCurveTo(-3, -82.6, -6, -81.6, -7, -78.6); ctx.quadraticCurveTo(-4.5, -80.6, 0, -80.4); ctx.moveTo(0, -81.6); ctx.bezierCurveTo(3, -82.6, 6, -81.6, 7, -78.6); ctx.quadraticCurveTo(4.5, -80.6, 0, -80.4); ctx.fillStyle = col(p.stacheCol || '#140c10'); ctx.fill(); }
   if (p.fangs) { poly([[-2.1, -79.6], [-1.2, -79.6], [-1.65, -77.4]], '#fff8ec'); poly([[1.2, -79.6], [2.1, -79.6], [1.65, -77.4]], '#fff8ec'); }
   if (sari) { circ(0, -92.6, 0.85, col('#c8302a')); circ(2.3, -83.2, 0.55, gold); }
@@ -326,8 +332,9 @@ function drawPerson(x, y, h, p, t = 0) {
     for (let a = 0; a < Math.PI; a += 0.32) circ(Math.cos(a) * 6.2, -99 + Math.sin(a) * 1.6, 0.75, col('#7a3a1a'));
     poly([[-9, -91], [-6, -88.6], [-3, -91], [0, -89], [3, -91], [6, -88.6], [9, -91]], jc);
   }
-  if (p.hair === 'arjuna') {
-    ctx.fillStyle = col('#1a1014'); ctx.beginPath(); ctx.ellipse(0, -92, 9, 5.5, 0, Math.PI, TAU); ctx.fill();
+  if (p.hair === 'fur') { ctx.fillStyle = col(shade(p.skin, -0.2)); ctx.beginPath(); ctx.ellipse(0, -91, 9.6, 7.4, 0, Math.PI, TAU); ctx.fill(); poly([[-9.6, -90], [-7, -87.5], [-4.5, -90], [0, -88], [4.5, -90], [7, -87.5], [9.6, -90]], col(shade(p.skin, -0.2))); }
+  if (p.hair === 'arjuna' || p.mukut) {
+    ctx.fillStyle = p.hair === 'arjuna' ? col('#1a1014') : col(shade(p.skin, -0.2)); ctx.beginPath(); ctx.ellipse(0, -92, 9, 5.5, 0, Math.PI, TAU); ctx.fill();
     const g = ctx.createLinearGradient(-9, 0, 9, 0); g.addColorStop(0, col('#b8862b')); g.addColorStop(0.5, col('#ffe08a')); g.addColorStop(1, col('#b8862b'));
     setRim(true); poly([[-9.6, -94], [9.6, -94], [6.5, -105], [2.8, -118], [0, -128], [-2.8, -118], [-6.5, -105]], g); setRim(false);
     for (const yy of [-98, -105, -112]) { const w = (yy + 128) * 0.31; stroke([[-w, yy], [w, yy]], goldD, 0.6); }
@@ -348,6 +355,8 @@ function drawPerson(x, y, h, p, t = 0) {
   if (pose.hands === 'namaste') { ctx.beginPath(); ctx.moveTo(0, -70); ctx.quadraticCurveTo(-3.4, -64, -2.2, -59.5); ctx.lineTo(2.2, -59.5); ctx.quadraticCurveTo(3.4, -64, 0, -70); ctx.fillStyle = skin; ctx.fill(); ctx.strokeStyle = skinD; ctx.lineWidth = 0.5; ctx.stroke(); stroke([[0, -69], [0, -60]], skinD, 0.4); }
   if (pose.hands === 'pointR') { stroke([[36, -71], [41, -71.5]], skin, 1.6); }
   if (pose.hands === 'palmR') { rrect(19.5, -98.5, 7, 7.5, 2.5, skin); }
+  if (pose.hands === 'lift') { circ(24, -100, 3, skin); mountainRock(24, -101, 46, t, 1); }
+  if (pose.hands === 'fly') { circ(-34, -91, 2.9, skin); }
   if (pose.hands === 'sword') {
     ctx.save(); ctx.shadowColor = 'rgba(255,80,60,0.9)'; ctx.shadowBlur = 20 * h / 300;
     ctx.beginPath(); ctx.moveTo(21, -96); ctx.quadraticCurveTo(36, -118, 22, -140); ctx.quadraticCurveTo(30, -118, 18, -97); ctx.closePath(); ctx.fillStyle = col('#eef2f6'); ctx.fill(); ctx.restore();
@@ -588,4 +597,27 @@ function feathers(t, x, y, n = 10, seed = 3, spread = 500) {
     ctx.beginPath(); ctx.moveTo(0, -30); ctx.quadraticCurveTo(12, 0, 0, 30); ctx.quadraticCurveTo(-12, 0, 0, -30); ctx.fillStyle = i % 3 ? '#6e6258' : '#d9a43a'; ctx.fill();
     stroke([[0, -30], [0, 34]], '#efe6d6', 1.5); ctx.restore();
   }
+}
+
+// ---------- Ep 4 (Sanjeevani) art ----------
+function mountainRock(x, y, s, t, glow = 1) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s / 100, s / 100);
+  ctx.beginPath(); ctx.moveTo(-50, 0); ctx.lineTo(-38, -30); ctx.lineTo(-26, -24); ctx.lineTo(-12, -62); ctx.lineTo(-2, -50); ctx.lineTo(8, -78); ctx.lineTo(22, -46); ctx.lineTo(32, -52); ctx.lineTo(50, 0);
+  for (let i = 0; i <= 10; i++) ctx.lineTo(50 - i * 10, 4 + (i % 2) * 7); ctx.closePath();
+  const g = ctx.createLinearGradient(0, -78, 0, 8); g.addColorStop(0, '#8a7e96'); g.addColorStop(1, '#4a3e52'); ctx.fillStyle = g; ctx.fill();
+  poly([[-12, -62], [-2, -50], [8, -78], [16, -60], [10, -56], [4, -62], [-4, -52], [-9, -56]], '#eef2fa');
+  stroke([[-30, -10], [-20, -30]], 'rgba(30,20,40,0.4)', 1.2); stroke([[18, -12], [24, -36]], 'rgba(30,20,40,0.4)', 1.2);
+  if (glow > 0) { const R = rng(55); for (let i = 0; i < 22; i++) { const px = -40 + R() * 80, py = -4 - R() * 40 * (1 - Math.abs(px) / 60); if (py < -55) continue; const a = (0.5 + 0.5 * Math.sin(t * 4 + i * 1.7)) * glow;
+    const gg = ctx.createRadialGradient(px, py, 0, px, py, 6); gg.addColorStop(0, `rgba(190,255,170,${a})`); gg.addColorStop(1, 'rgba(190,255,170,0)'); ctx.fillStyle = gg; ctx.fillRect(px - 6, py - 6, 12, 12); circ(px, py, 1.1, `rgba(235,255,210,${0.6 + 0.4 * a})`); } }
+  ctx.restore();
+}
+function nightSky(t, o = {}) {
+  const g = ctx.createLinearGradient(0, -200, 0, 1200); g.addColorStop(0, '#05071a'); g.addColorStop(0.55, '#141842'); g.addColorStop(0.85, '#3a2a5e'); g.addColorStop(1, o.dawn ? '#e0805a' : '#5a3a6a');
+  ctx.fillStyle = g; ctx.fillRect(-600, -600, W + 1200, 1900);
+  const R = rng(o.seed || 21); for (let i = 0; i < 140; i++) { const x = -300 + R() * (W + 600), y = -300 + R() * 1300, a = 0.4 + 0.6 * Math.abs(Math.sin(t * (0.5 + R()) + i)); circ(x, y, 1 + R() * 2.2, `rgba(255,255,240,${a * (1 - y / 1500)})`); }
+  if (o.moon !== false) { const mx = o.moonX ?? 820, my = o.moonY ?? 380; const mg = ctx.createRadialGradient(mx, my, 20, mx, my, 260); mg.addColorStop(0, 'rgba(230,235,255,0.5)'); mg.addColorStop(1, 'rgba(230,235,255,0)'); ctx.fillStyle = mg; ctx.fillRect(mx - 260, my - 260, 520, 520); circ(mx, my, 70, '#f4f2e6'); circ(mx - 20, my - 12, 12, 'rgba(200,200,190,0.5)'); circ(mx + 18, my + 20, 9, 'rgba(200,200,190,0.5)'); }
+}
+function snowPeaks(y0, t) {
+  const peaks = [[-200, 360], [120, 520], [420, 420], [700, 600], [980, 460], [1250, 380]];
+  for (const [px, ph] of peaks) { poly([[px - 330, y0], [px, y0 - ph], [px + 330, y0]], '#3a3e66'); poly([[px - 95, y0 - ph * 0.71], [px, y0 - ph], [px + 95, y0 - ph * 0.71], [px + 40, y0 - ph * 0.76], [px, y0 - ph * 0.7], [px - 45, y0 - ph * 0.77]], '#e8ecf8'); }
 }

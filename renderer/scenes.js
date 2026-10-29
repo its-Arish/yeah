@@ -362,6 +362,12 @@ SCENES.stage = {
     const bg = D('bg', 'sunset'), dusk = D('dusk', 0), s = D('sun', {});
     const so = { dusk, sunX: s.x ?? 540, sunY: s.y ?? 1050, sunR: s.r ?? 90, rays: s.rays ?? 0.35, ring: s.ring, big: s.big, clear: true, seed: D('seed', 7) };
     if (bg === 'forest') forestBase(T, so);
+    else if (bg === 'night' || bg === 'himalaya' || bg === 'dawn') {
+      nightSky(T, { dawn: bg === 'dawn', moon: D('moon', bg !== 'dawn'), seed: D('seed', 21) });
+      if (bg === 'dawn') { const dg = ctx.createLinearGradient(0, 600, 0, HZ); dg.addColorStop(0, 'rgba(255,170,110,0)'); dg.addColorStop(1, 'rgba(255,170,110,0.7)'); ctx.fillStyle = dg; ctx.fillRect(-600, 600, W + 1200, HZ - 600); sun(so.sunX, HZ + 20, so.sunR, T, { rays: so.rays }); }
+      if (bg === 'himalaya') { snowPeaks(HZ + 40, T); const sg = ctx.createLinearGradient(0, HZ, 0, 2000); sg.addColorStop(0, '#c9cfe6'); sg.addColorStop(1, '#6a6e96'); ctx.fillStyle = sg; ctx.fillRect(-600, HZ + 30, W + 1200, 2000); }
+      else { hills(HZ - 10, 50, bg === 'dawn' ? '#4a2e52' : '#1e1a3a', 4, 300); if (D('banners', false)) banners(HZ + 15, T); const gg = ctx.createLinearGradient(0, HZ, 0, 2000); gg.addColorStop(0, bg === 'dawn' ? '#3a2438' : '#1a1430'); gg.addColorStop(1, '#0a0812'); ctx.fillStyle = gg; ctx.fillRect(-600, HZ, W + 1200, 2000); }
+    }
     else if (bg === 'lanka') {
       sky({ dusk }); if (D('fire', 0)) { ctx.fillStyle = `rgba(200,40,20,${0.25 * D('fire', 0)})`; ctx.fillRect(-600, -600, W + 1200, 1800); }
       sun(so.sunX, so.sunY, so.sunR, T, { rays: so.rays, ring: so.ring, big: so.big });
@@ -384,6 +390,7 @@ SCENES.stage = {
       const pm = ease(lt / (CUR.t1 - CUR.t0)), px = lerp(pr.x, pr.x2 ?? pr.x, pm), py = lerp(pr.y, pr.y2 ?? pr.y, pm);
       if (pr.type === 'vulture') { const fallK = pr.fallAt != null && lt > pr.fallAt ? easeOut((lt - pr.fallAt) / 0.9) : 0; vulture(px, py + fallK * (pr.fallDy || 0), pr.s || 400, T, Object.assign({}, pr, { mode: fallK > 0 ? 'fall' : pr.mode, nowings: pr.nowings || (pr.cutAt != null && lt > pr.cutAt), rot: (pr.rot || 0) + fallK * (pr.fallRot || 0) })); }
       if (pr.type === 'pushpaka') pushpaka(px, py, pr.s || 500, T, pr);
+      if (pr.type === 'mountain') mountainRock(px, py, pr.s || 600, T, pr.glow ?? 1);
       if (pr.type === 'pyre') pyre(px, py, pr.s || 400, T, pr.fire ?? 1);
       if (pr.type === 'feathers') feathers(lt, px, py, pr.n || 10, pr.seed || 3, pr.spread || 500);
       if (pr.type === 'slash' && lt > pr.at) { const k = clamp((lt - pr.at) / 0.25), a = 1 - clamp((lt - pr.at - 0.2) / 0.5); ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = '#fff6e0'; ctx.lineWidth = 26 * (1 - k * 0.6); ctx.lineCap = 'round'; ctx.shadowColor = '#ff4a3d'; ctx.shadowBlur = 40; ctx.beginPath(); ctx.moveTo(pr.x - 500, pr.y - 500); ctx.lineTo(pr.x - 500 + 1000 * k, pr.y - 500 + 1000 * k); ctx.stroke(); ctx.restore(); }
@@ -466,5 +473,45 @@ SCENES.versus = {
     if (lt > 0.45 && lt < fa0) txt('VS', 540, 1075, 240, { fill: PAL.gold, stroke: '#140a12', sw: 22, scale: easeBack((lt - 0.45) / 0.25), rot: -0.08 });
     const fa = D('fightAt', 1.4);
     if (lt > fa) txt('FIGHT!', 540, 1075, 190, { fill: '#ff4a3d', stroke: '#140a12', sw: 18, scale: easeBack((lt - fa) / 0.2) });
+  }
+};
+
+// ---------- countdown timer ----------
+// > label: SUNRISE IN   > from: 21600 (seconds)   > to: 21540   > sub: text
+SCENES.countdown = {
+  draw(lt, T) { nightSky(T, { moon: false }); ctx.fillStyle = `rgba(120,0,10,${0.25 + 0.15 * Math.sin(lt * 8)})`; ctx.fillRect(-100, -100, W + 200, H + 200); },
+  over(lt, T) {
+    const d = CUR.t1 - CUR.t0, v = Math.max(0, Math.round(lerp(D('from', 21600), D('to', 21540), lt / d)));
+    const hh = String(Math.floor(v / 3600)).padStart(2, '0'), mm = String(Math.floor(v % 3600 / 60)).padStart(2, '0'), ss = String(v % 60).padStart(2, '0');
+    txt(D('label', 'SUNRISE IN'), 540, 640, 64, { fill: '#ffd0c8', stroke: '#140a12', sw: 10 });
+    rrect(70, 720, 940, 300, 40, 'rgba(10,4,10,0.85)'); ctx.strokeStyle = '#ff3a2a'; ctx.lineWidth = 6; ctx.stroke();
+    txt(`${hh}:${mm}:${ss}`, 540, 880, 190, { fill: '#ff3a2a', shadow: 'rgba(255,60,40,0.9)', shadowBlur: 40, scale: 1 + 0.02 * Math.sin(lt * 12) });
+    if (D('sub', null)) txt(D('sub', ''), 540, 1110, 44, { fill: '#fff', weight: 500 });
+  }
+};
+// ---------- map route ----------
+// > from: LANKA   > to: HIMALAYAS   > distance: ~3,000 KM   > stamp: ETA: IMPOSSIBLE   > stampAt: 1.6
+SCENES.map = {
+  draw(lt, T) {
+    ctx.fillStyle = '#2a4a6a'; ctx.fillRect(-600, -600, W + 1200, H + 1200);
+    ctx.save(); ctx.globalAlpha = 0.25; for (let i = 0; i < 40; i++) stroke([[-200, i * 60 + (lt * 20 % 60)], [W + 200, i * 60 + (lt * 20 % 60) + 30]], '#9ac0e0', 2); ctx.restore();
+    const india = [[260, 250], [520, 210], [760, 230], [900, 330], [860, 470], [760, 560], [740, 700], [660, 900], [600, 1120], [540, 1300], [470, 1180], [400, 960], [330, 760], [230, 640], [180, 470]];
+    poly(india, '#e8d6a8'); ctx.strokeStyle = '#8a6a3a'; ctx.lineWidth = 5; ctx.stroke();
+    fillE(600, 1440, 55, 80, '#e8d6a8'); ctx.stroke();
+    for (let i = 0; i < 5; i++) poly([[330 + i * 90, 330], [375 + i * 90, 250], [420 + i * 90, 330]], '#6a6e96');
+    for (let i = 0; i < 5; i++) poly([[355 + i * 90, 290], [375 + i * 90, 250], [395 + i * 90, 290]], '#fff');
+  },
+  over(lt, T) {
+    const d = CUR.t1 - CUR.t0, k = ease(clamp(lt / (d * 0.6)));
+    const P = [[600, 1430], [560, 1250], [520, 1000], [470, 760], [440, 520], [470, 330]];
+    ctx.save(); ctx.setLineDash([22, 18]); ctx.lineDashOffset = -lt * 60; ctx.strokeStyle = '#c8302a'; ctx.lineWidth = 9; ctx.beginPath();
+    const n = Math.max(1, k * (P.length - 1)); ctx.moveTo(P[0][0], P[0][1]);
+    for (let i = 1; i <= Math.floor(n); i++) ctx.lineTo(P[i][0], P[i][1]);
+    const f = n - Math.floor(n), i0 = Math.floor(n); if (i0 < P.length - 1) ctx.lineTo(lerp(P[i0][0], P[i0 + 1][0], f), lerp(P[i0][1], P[i0 + 1][1], f));
+    ctx.stroke(); ctx.restore();
+    circ(600, 1430, 18, '#c8302a'); txt(D('from', 'LANKA'), 760, 1440, 50, { fill: '#fff', stroke: '#140a12', sw: 8 });
+    txt(D('to', 'HIMALAYAS'), 540, 190, 56, { fill: '#fff', stroke: '#140a12', sw: 8 });
+    if (k > 0.5) txt(D('distance', '~3,000 KM'), 760, 860, 64, { fill: PAL.gold, stroke: '#140a12', sw: 10, rot: -0.08 });
+    if (D('stamp', null)) stamp(D('stamp', ''), 540, 1660, lt - D('stampAt', d * 0.65), { size: 80, rot: -0.12 });
   }
 };
