@@ -48,6 +48,7 @@ function withCtx(c, fn) { const prev = window.ctxRef; ctxSwap(c); try { fn(); } 
 function ctxSwap(c) { ctx = c; }
 
 function drawCaptions(t) {
+  if (window.NOCAPS) return;
   const cap = TL.captions.find(c => t >= c.t0 && t < c.t1);
   if (!cap) return;
   const words = cap.text.split(' '), n = words.length, dur = cap.t1 - cap.t0;

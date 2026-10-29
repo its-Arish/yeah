@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Render a timeline to MP4 frames using the canvas renderer in headless Chromium.
 
-usage: python3 render.py out/ekalavya.json out/video_silent.mp4 [--stills 1,4.5,10]  (compile the episode first)
+usage: python3 render.py out/ekalavya.json out/video.mp4 [--no-captions] [--crf 20] [--stills 1,4.5,10]
+(compile the episode first). Output has no audio and exactly round(duration*fps) frames.
 """
 import base64, json, subprocess, sys, pathlib
 from playwright.sync_api import sync_playwright
@@ -9,6 +10,7 @@ from playwright.sync_api import sync_playwright
 ROOT = pathlib.Path(__file__).resolve().parent
 tl_path, out = sys.argv[1], sys.argv[2]
 stills = None
+crf = sys.argv[sys.argv.index('--crf') + 1] if '--crf' in sys.argv else '20'
 if '--stills' in sys.argv:
     stills = [float(x) for x in sys.argv[sys.argv.index('--stills') + 1].split(',')]
 tl = json.loads(pathlib.Path(tl_path).read_text())
@@ -23,6 +25,8 @@ with sync_playwright() as p:
     page.goto((ROOT / 'renderer' / 'index.html').as_uri())
     page.evaluate('j => setTL(j)', tl)
     page.evaluate('ready()')
+    if '--no-captions' in sys.argv:
+        page.evaluate('window.NOCAPS = true')
     if stills:
         outdir = pathlib.Path(out); outdir.mkdir(parents=True, exist_ok=True)
         for t in stills:
@@ -30,7 +34,7 @@ with sync_playwright() as p:
             (outdir / f'still_{t:06.2f}.jpg').write_bytes(base64.b64decode(d.split(',')[1]))
     else:
         ff = subprocess.Popen(['ffmpeg', '-y', '-v', 'error', '-f', 'image2pipe', '-c:v', 'mjpeg', '-r', str(fps), '-i', '-',
-                               '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '18', '-pix_fmt', 'yuv420p', out], stdin=subprocess.PIPE)
+                               '-c:v', 'libx264', '-preset', 'veryfast', '-tune', 'animation', '-crf', crf, '-pix_fmt', 'yuv420p', out], stdin=subprocess.PIPE)
         for i in range(n):
             d = page.evaluate('([t]) => frame(t, 0.93)', [i / fps])
             ff.stdin.write(base64.b64decode(d.split(',')[1]))

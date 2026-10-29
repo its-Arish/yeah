@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Synthesize the music bed + SFX for a timeline (no samples needed).
+"""Synthesize the music bed and SFX for a timeline as separate, sample-aligned stems.
 
-usage: python3 audio.py out/ekalavya.json out/audio.wav   (compile the episode first)
+usage: python3 audio.py out/ekalavya.json out/ekalavya/ekalavya
+writes <prefix>_music.wav, <prefix>_sfx.wav (44.1 kHz stereo, exactly the timeline length)
+and <prefix>_mix.wav (= music + sfx, for previews). 24-bit PCM, peaks <= -1 dBFS.
+Music and SFX share one gain, so music + sfx at 0 dB each = the balance of the finished video (~ -14 LUFS).
 """
-import json, sys, numpy as np
+import json, sys, subprocess, re, tempfile, os, numpy as np
 from scipy.io import wavfile
 from scipy.signal import butter, sosfilt
 
 SR = 44100
 tl = json.load(open(sys.argv[1]))
-N = int((tl['duration'] + 0.5) * SR)
+N = int(round(tl['duration'] * SR))  # exact timeline length (matches video frames)
 L = np.zeros(N); R = np.zeros(N)
 rng = np.random.default_rng(7)
 
@@ -133,6 +136,8 @@ def dramatic():
 
 FX = {'whoosh': lambda: whoosh(), 'impact': impact, 'riser': lambda: riser(1.4), 'riser_short': lambda: riser(0.6) * 0.6,
       'pop': pop, 'ding': ding, 'stamp': stampfx, 'arrow': arrow, 'thunk': thunk, 'bark': bark, 'levelup': levelup, 'dramatic': dramatic}
+# music bus is complete: keep it, then render SFX onto a clean bus
+ML, MR = L.copy(), R.copy(); L[:] = 0; R[:] = 0
 for e in tl['sfx']:
     ty = e['type']
     if ty == 'arrows7':
@@ -142,12 +147,29 @@ for e in tl['sfx']:
     else:
         add(FX[ty](), e['t'], 0.9 if ty != 'whoosh' else 0.6)
 
-# master: duck nothing (no VO), gentle limiter, fades
-mix = np.stack([L, R], 1)
-mix[:int(0.3 * SR)] *= np.linspace(0, 1, int(0.3 * SR))[:, None]
-fo = int(0.6 * SR); end = int(tl['duration'] * SR)
-mix[end - fo:end] *= np.linspace(1, 0, fo)[:, None]; mix[end:] = 0
-mix = np.tanh(mix * 1.4) / np.tanh(1.4)
-mix = mix / np.max(np.abs(mix)) * 0.89
-wavfile.write(sys.argv[2], SR, (mix * 32767).astype(np.int16))
-print('ok', mix.shape[0] / SR, 's')
+music = np.stack([ML, MR], 1); sfx = np.stack([L, R], 1)
+fi, fo = int(0.3 * SR), int(0.6 * SR)
+music[:fi] *= np.linspace(0, 1, fi)[:, None]; music[-fo:] *= np.linspace(1, 0, fo)[:, None]
+
+def lufs(x):
+    fd, path = tempfile.mkstemp(suffix='.wav'); os.close(fd)
+    wavfile.write(path, SR, x.astype(np.float32))
+    out = subprocess.run(['ffmpeg', '-nostats', '-i', path, '-af', 'ebur128', '-f', 'null', '-'], capture_output=True, text=True).stderr
+    os.remove(path)
+    return float(re.findall(r'I:\s+(-?[\d.]+) LUFS', out)[-1])
+
+mix = music + sfx
+# one shared gain -> stems keep their balance; aim for -14 LUFS but never let any stem or the sum peak above -1 dBFS
+g = 10 ** ((-14.0 - lufs(mix)) / 20)
+peak = max(np.max(np.abs(music)), np.max(np.abs(sfx)), np.max(np.abs(mix))) * g
+if peak > 0.891: g *= 0.891 / peak
+music *= g; sfx *= g; mix = music + sfx
+prefix = sys.argv[2]
+os.makedirs(os.path.dirname(prefix) or '.', exist_ok=True)
+for name, x in (('music', music), ('sfx', sfx), ('mix', mix)):
+    fd, tmp = tempfile.mkstemp(suffix='.wav'); os.close(fd)
+    wavfile.write(tmp, SR, x.astype(np.float32))
+    subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-c:a', 'pcm_s24le', f'{prefix}_{name}.wav'], check=True)
+    os.remove(tmp)
+print(f'mix loudness {lufs(mix):.1f} LUFS (finished video is normalized to -14)')
+print(f'ok {N / SR:.3f}s  ({N} samples)  music peak {20*np.log10(np.max(np.abs(music))+1e-9):.1f} dBFS, sfx peak {20*np.log10(np.max(np.abs(sfx))+1e-9):.1f} dBFS')
