@@ -64,7 +64,7 @@ function drawCaptions(t) {
     const total = ln.reduce((a, b) => a + b.ww, 0) + space * (ln.length - 1);
     let x = W / 2 - total / 2;
     ln.forEach(({ w, ww }) => {
-      const wt = cap.t0 + idx * step; idx++;
+      const wt = cap.wt && cap.wt[idx] != null ? cap.wt[idx] : cap.t0 + idx * step; idx++;
       if (t >= wt) {
         const k = clamp((t - wt) / 0.13), s = 1 + 0.32 * (1 - easeOut(k));
         const hl = cap.hl && cap.hl[w];

@@ -47,11 +47,13 @@ pip install -r requirements.txt && python -m playwright install chromium   # plu
 | Path | What it is |
 |---|---|
 | `episodes/ekalavya/` | The full 61 s reference episode (`episode.txt`) and its script and VO read (`script.md`) |
+| `episodes/shabari/` | Ramayana Ep 1, a 99 s voice-over episode (VO, alignment, Ramayana cast) |
 | `episodes/karna-armour/` | A 23 s template built only from generic scenes and custom characters |
 | `make_timeline.py` | Compiles `episode.txt` into the timeline JSON (caption timing, highlights, SFX cues, music sections, cameras) |
 | `renderer/` | Canvas renderer: `lib.js` (backgrounds, puppet characters, props), `scenes.js` (scenes, including the generic `stage`), `index.html` (camera, transitions, captions), `fonts/` (bundled, OFL) |
 | `render.py` | Renders frames in headless Chromium and pipes them to ffmpeg; `--stills` gives quick previews |
 | `audio.py` | Synthesized tanpura drone, dhol pulse, string pad, heartbeat and all SFX, driven by the timeline |
+| `vo_align.py` | Fits the script's caption lines to a voice-over recording (pause detection plus a speaking-rate fit), giving word-level timings |
 | `export_meta.py` | Writes the SRT captions and the markers CSV |
 | `export_sfx.py` | (optional) Exports each sound as its own short WAV, if you want a sound library |
 | `build.sh` | Episode → all the stems above |
@@ -59,4 +61,6 @@ pip install -r requirements.txt && python -m playwright install chromium   # plu
 | `.github/workflows/build-episodes.yml` | Cloud rendering on push |
 
 ## Voice-over
-The build adds no voice; the captions carry the story. Record or generate a VO from `script.md` and put it on a fourth track in your editor. Use `markers.csv` to line lines up with shots, and duck the music track by about 6–8 dB under the voice.
+**Voice-over episodes** (for example `episodes/shabari`): put the recording next to `episode.txt` and run `vo_align.py`. The whole video is then timed to the voice, and `<name>_video.mp4` comes out with the voice-over and captions built in. See FORMAT.md, "Voice-over episodes".
+
+Without a VO file, the build adds no voice and the captions carry the story. Record or generate a VO from `script.md` and put it on a fourth track in your editor. Use `markers.csv` to line lines up with shots, and duck the music track by about 6–8 dB under the voice.

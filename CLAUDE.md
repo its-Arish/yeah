@@ -6,3 +6,4 @@
 - Keep the beat rules in FORMAT.md: ending-first hook, a change every 2–3.5 s, 3–5 meme inserts early, `calm` before the confrontation, `fade` + `sad` for the climax, optional `review` gag card.
 - A new character is a `cast:` override of a built-in one. New poses go in `POSES` and new hair/top styles in `drawPerson` in `renderer/lib.js`.
 - `out/` is git-ignored. Never commit rendered video.
+- **Series workflow (Ramayana etc.):** 1) write the script (>60 s; table of beats + VO lines) and wait for approval, 2) the user sends the VO, 3) save it as `episodes/<name>/vo.wav`, write `episode.txt` with `auto` secs (caption lines = VO lines, in order), run `vo_align.py`, check stills, run `build.sh`. Deliver `<name>_video.mp4` (picture + captions + VO together), `<name>_music.wav` and `<name>_sfx.wav` (separate, same length), plus the srt/markers. See FORMAT.md, "Voice-over episodes".

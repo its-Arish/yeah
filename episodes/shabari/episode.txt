@@ -1,0 +1,160 @@
+title: Why Rama ate the bitten berries
+fps: 30
+vo: vo.wav
+vo_align: vo_align.json
+cast: {"rama": {"base": "arjuna", "skin": "#4a78c0", "hair": "jata", "top": "bare", "dhoti": "#e3a92e", "border": "#c8452f", "neck": "mala", "tilak": "red", "quiver": true}, "lakshmana": {"base": "arjuna", "skin": "#d39b6e", "hair": "jata", "top": "bare", "dhoti": "#c8602a", "border": "#f2c14e", "neck": "mala", "tilak": "red", "quiver": true}, "shabari": {"base": "eka", "body": "sari", "sari": "#a8563a", "border": "#e0b04a", "hair": "bun", "hairCol": "#ece6dc", "old": true, "skin": "#8a5a3c", "neck": "beads", "quiver": false, "band": "#c9a26a"}, "shabariY": {"base": "eka", "body": "sari", "sari": "#b86a3e", "border": "#e0b04a", "hair": "bun", "hairCol": "#1d1216", "skin": "#8f5d3e", "neck": "beads", "quiver": false, "band": "#c9a26a"}, "matanga": {"base": "drona", "dhoti": "#b8652e", "skin": "#c08a62"}, "villager": {"base": "prince", "hair": "plain", "dhoti": "#6a7a3a", "neck": "none", "skin": "#a8744c"}, "villager2": {"base": "prince", "hair": "plain", "dhoti": "#7a3a5a", "neck": "none", "skin": "#c08a5e"}}
+
+# Shot lengths are "auto": each shot lasts from its first spoken caption line until the next shot.
+# Caption lines = the VO script, one spoken phrase per line. "~line" is spoken but not shown.
+# fx timing: name@seconds into the shot, or name@wN = at the Nth caption word of the shot.
+
+# scene  | secs | in    | mood      | captions                                                    | fx
+stage    | auto | black | fast      | An old woman *bit every berry*                               | riser_short@0
+  > title: RAMAYANA
+  > bg: forest
+  > sun: {"rays": 0.5}
+  > chars: [{"who": "shabari", "x": 330, "y": 1760, "h": 900, "kneel": true, "pose": "offer", "leaf": true, "berries": true, "expr": "smile", "look": 1}, {"who": "rama", "x": 770, "y": 1760, "h": 1000, "pose": "down", "expr": "smile", "look": -0.7}]
+stage    | auto | cut   | fast      | before giving it to a god.                                   |
+  > bg: forest
+  > sun: {"y": 820, "r": 130, "rays": 0.6, "ring": true}
+  > chars: [{"who": "shabari", "x": 540, "y": 2600, "h": 2000, "pose": "taste", "expr": "smile", "eyes": "closed"}]
+stage    | auto | cut   | fast      | And he *ate every single one.*                               | punch@w4
+  > bg: forest
+  > sun: {"y": 760, "r": 140, "rays": 0.6, "ring": true}
+  > chars: [{"who": "rama", "x": 540, "y": 2600, "h": 2000, "pose": "taste", "expr": "smile"}]
+stage    | auto | cut   | fast      | Her name was *Shabari.* / A forest woman.                    |
+  > bg: forest
+  > seed: 13
+  > chars: [{"who": "shabariY", "x": 540, "y": 1800, "h": 1150, "pose": "namaste", "expr": "smile"}]
+stage    | auto | cut   | fast      | When she asked the great sages / to teach her...             |
+  > bg: ashram
+  > chars: [{"who": "matanga", "x": 170, "y": 1640, "h": 760, "pose": "down", "expr": "stern", "look": 1}, {"who": "drona", "x": 400, "y": 1620, "h": 740, "pose": "down", "expr": "stern", "look": 1, "phase": 1}, {"who": "shabariY", "x": 800, "y": 1780, "h": 980, "pose": "namaste", "expr": "smile", "look": -1}]
+sign     | auto | cut   | fast      | they !turned her away.!                                      | stamp@w2
+  > small: RISHI ASHRAM|EST. TRETA YUGA
+  > big: SAGES|ONLY!
+  > scribble: no forest women
+  > who: shabariY
+stage    | auto | cut   | fast      | All except one. / *Sage Matanga* let her stay.               | ding@w4
+  > bg: ashram
+  > chars: [{"who": "matanga", "x": 330, "y": 1760, "h": 1000, "pose": "bless", "expr": "smile", "look": 0.7}, {"who": "shabariY", "x": 760, "y": 1760, "h": 900, "kneel": true, "pose": "namaste", "expr": "smile", "look": -0.6}]
+stage    | auto | fade  | calm      | Before he died, he told her:                                 |
+  > bg: ashram
+  > flashback: true
+  > label: HIS LAST WORDS
+  > sun: {"y": 950, "r": 120, "rays": 0.6, "big": true}
+  > chars: [{"who": "matanga", "x": 360, "y": 1760, "h": 1000, "pose": "bless", "expr": "smile", "eyes": "closed"}, {"who": "shabariY", "x": 750, "y": 1760, "h": 900, "kneel": true, "pose": "namaste", "expr": "sad", "look": -0.6}]
+stage    | auto | cut   | calm      | "Wait here." / "*Rama* himself will come to you."           |
+  > bg: forest
+  > flashback: true
+  > label: HIS LAST WORDS
+  > sun: {"y": 760, "r": 130, "rays": 0.7, "ring": true}
+  > chars: [{"who": "matanga", "x": 540, "y": 2650, "h": 2000, "pose": "bless", "expr": "smile"}]
+chat     | auto | cut   | fast      | So she *waited.*                                             | pop@0.1 pop@0.45 pop@0.8 pop@1.15 stamp@1.4
+  > channel: #forest-updates
+  > messages: [[0.1, "shabariY", "SHABARI", "is Rama coming today?"], [0.45, "villager", "FOREST NEWS", "no."], [0.8, "shabariY", "SHABARI", "today?"], [1.15, "villager", "FOREST NEWS", "no."]]
+  > typer: Shabari
+  > left: ""
+  > stamp: DAY 4,000
+  > stampAt: 1.4
+stage    | auto | cut   | fast      | Every morning she swept his path.                            |
+  > bg: forest
+  > seed: 17
+  > chars: [{"who": "shabariY", "x": 520, "y": 1790, "h": 1050, "pose": "sweep", "expr": "smile", "look": -0.5}]
+stage    | auto | cut   | fast      | Every evening, she picked berries.                           | ding@w4
+  > bg: forest
+  > seed: 21
+  > sun: {"x": 760, "y": 1000, "r": 80, "rays": 0.4}
+  > chars: [{"who": "shabariY", "x": 540, "y": 1790, "h": 1050, "pose": "offer", "leaf": true, "berries": true, "expr": "smile"}]
+  > badge: STREAK: 14,600 DAYS
+levelup  | auto | cut   | fast      | Years became *decades.*                                      | levelup@0.1
+  > who: shabari
+  > header: STILL WAITING
+  > skill: PATIENCE
+  > sub: NO SIGN OF RAMA YET
+  > counter: {"label": "YEARS WAITED", "from": 1, "to": 40}
+  > stamp: LEGENDARY
+stage    | auto | fade  | fast      | Her hair turned white.                                       |
+  > bg: forest
+  > seed: 21
+  > chars: [{"who": "shabari", "x": 540, "y": 2500, "h": 1900, "pose": "down", "expr": "neutral"}]
+stage    | auto | cut   | fast      | People laughed: / "Your god isn't coming, old lady."         |
+  > bg: ashram
+  > chars: [{"who": "villager", "x": 220, "y": 1720, "h": 880, "pose": "point", "expr": "smile", "look": 0.8}, {"who": "villager2", "x": 470, "y": 1700, "h": 820, "pose": "shock", "expr": "smile", "look": 0.8, "phase": 1}, {"who": "shabari", "x": 820, "y": 1780, "h": 960, "pose": "down", "expr": "sad", "look": -0.8}]
+stage    | auto | cut   | fast      | She kept picking.                                            |
+  > bg: forest
+  > seed: 23
+  > chars: [{"who": "shabari", "x": 540, "y": 1790, "h": 1050, "pose": "offer", "leaf": true, "berries": true, "expr": "neutral"}]
+stage    | auto | cut   | fast      | And she *tasted every one,* / so only the sweetest would reach him. |
+  > bg: forest
+  > seed: 29
+  > chars: [{"who": "shabari", "x": 540, "y": 2600, "h": 2000, "pose": "taste", "expr": "smile", "eyes": "closed"}]
+problem  | auto | cut   | calm      | ~Then.                                                       | punch@w1
+  > word: THEN.
+  > who: ""
+stage    | auto | cut   | calm      | One day, two princes / walked into the forest.               |
+  > bg: forest
+  > sun: {"y": 980, "r": 110, "rays": 0.8, "ring": true}
+  > chars: [{"who": "rama", "x": 380, "y": 1760, "h": 1000, "pose": "holdbow", "expr": "smile", "enter": 0.8}, {"who": "lakshmana", "x": 740, "y": 1760, "h": 960, "pose": "holdbow", "expr": "neutral", "enter": 1.2, "phase": 1.3}]
+stage    | auto | cut   | calm      | *Rama.*                                                      | ding@w1
+  > bg: forest
+  > sun: {"y": 760, "r": 140, "rays": 0.8, "ring": true}
+  > chars: [{"who": "rama", "x": 540, "y": 2600, "h": 2000, "pose": "holdbow", "expr": "smile"}]
+stage    | auto | cut   | calm      | And his brother *Lakshmana.*                                 |
+  > bg: forest
+  > sun: {"x": 300, "y": 800, "r": 120, "rays": 0.5}
+  > chars: [{"who": "lakshmana", "x": 540, "y": 2600, "h": 2000, "pose": "holdbow", "expr": "neutral"}]
+stage    | auto | cut   | calm      | She fell at his feet / and held out her berries.             |
+  > bg: forest
+  > seed: 31
+  > chars: [{"who": "rama", "x": 720, "y": 1760, "h": 1000, "pose": "down", "expr": "smile", "look": -0.7}, {"who": "shabari", "x": 340, "y": 1780, "h": 900, "kneel": true, "pose": "offer", "leaf": true, "berries": true, "expr": "smile", "look": 1}]
+stage    | auto | cut   | calm      | Every one, !bitten.!                                         | punch@w3
+  > bg: forest
+  > seed: 31
+  > chars: [{"who": "shabari", "x": 540, "y": 2300, "h": 1500, "kneel": true, "pose": "offer", "leaf": true, "berries": true, "expr": "smile", "look": 0.5}]
+  > cam: {"z": [1.1, 1.35], "x": [540, 540], "y": [1300, 1460]}
+stage    | auto | cut   | calm      | *Lakshmana* froze.                                           | dramatic@w1
+  > bg: forest
+  > sun: {"y": 700, "r": 120, "rays": 0.5, "ring": true}
+  > chars: [{"who": "lakshmana", "x": 540, "y": 2700, "h": 2000, "pose": "shock", "expr": "shock"}]
+  > cam: {"z": [1.0, 1.15], "x": [540, 540], "y": [1000, 940]}
+stage    | auto | cut   | calm      | "Brother..." / "she's !already tasted them.!"               |
+  > bg: forest
+  > tint: red
+  > seed: 41
+  > chars: [{"who": "lakshmana", "x": 330, "y": 1760, "h": 980, "pose": "point", "expr": "shock", "look": 0.6}, {"who": "rama", "x": 780, "y": 1760, "h": 1000, "pose": "down", "expr": "smile", "look": -0.6}]
+stage    | auto | fade  | heartbeat | Rama smiled...                                               |
+  > bg: forest
+  > sun: {"y": 760, "r": 140, "rays": 0.6, "ring": true}
+  > chars: [{"who": "rama", "x": 540, "y": 2600, "h": 2000, "pose": "down", "expr": "smile"}]
+stage    | auto | cut   | heartbeat | and ate one. / And another. / And *every single one.*       |
+  > bg: forest
+  > seed: 37
+  > sun: {"y": 1000, "r": 100, "rays": 0.6}
+  > chars: [{"who": "shabari", "x": 330, "y": 1780, "h": 880, "kneel": true, "pose": "offer", "leaf": true, "berries": true, "expr": "smile", "look": 1}, {"who": "rama", "x": 740, "y": 1760, "h": 1000, "pose": "taste", "expr": "smile", "look": -0.5}]
+stage    | auto | fade  | sad       | "I have eaten in palaces," he said.                          |
+  > bg: forest
+  > dusk: 0.2
+  > sun: {"x": 760, "y": 820, "r": 110, "rays": 0.4}
+  > chars: [{"who": "rama", "x": 540, "y": 2550, "h": 1900, "pose": "namaste", "expr": "smile"}]
+stage    | auto | fade  | sad       | "Nothing was ever this *sweet.*"                             |
+  > bg: forest
+  > dusk: 0.25
+  > sun: {"x": 320, "y": 820, "r": 110, "rays": 0.5}
+  > chars: [{"who": "shabari", "x": 540, "y": 2550, "h": 1900, "pose": "namaste", "expr": "smile", "tear": true}]
+stage    | auto | fade  | sad       | Because the sweetness / was never in the berries...          |
+  > bg: forest
+  > dusk: 0.3
+  > sun: {"y": 880, "r": 150, "rays": 0.8, "ring": true}
+  > chars: [{"who": "shabari", "x": 540, "y": 1940, "h": 1600, "kneel": true, "pose": "namaste", "expr": "sad", "eyes": "closed", "tear": true}]
+stage    | auto | fade  | sad       | it was in the *waiting.*                                     |
+  > bg: ashram
+  > dusk: 0.35
+  > sun: {"x": 820, "y": 1080, "r": 80, "rays": 0.4}
+  > chars: [{"who": "shabari", "x": 430, "y": 1500, "h": 520, "kneel": true, "pose": "namaste", "expr": "smile", "eyes": "closed"}, {"who": "rama", "x": 620, "y": 1490, "h": 560, "pose": "bless", "expr": "smile"}]
+  > cam: {"z": [1.2, 1.0], "x": [540, 540], "y": [1300, 1100]}
+review   | 3.4  | cut   | fast      | -                                                            | pop@0.4 pop@1.1 ding@2.0
+  > header: RATE MY HOST
+  > who: shabari
+  > name: SHABARI
+  > sub: forest host · waited 40 years
+  > rows: [[0.4, 5, "best berries of my life", "Rama"], [1.1, 3, "pre-tasted??", "Lakshmana"]]

@@ -59,3 +59,29 @@ boyYes  | 2.0  | cut   | fast | And the boy said *YES.*                   | punc
 
 ### Story-specific scenes (Ekalavya episode; reusable as-is)
 `title boyYes drona clay practice dog noScratch arjuna promise meet youAre fee hand offer bowdown legend`. Each one draws a fixed composition. For a new story, write the shot as a `stage` instead, or add a function to `renderer/scenes.js`.
+
+## Voice-over episodes (the standard workflow)
+
+1. **Script.** Write it, get it approved, and record or generate the VO from the exact caption lines.
+2. **Episode file.** Write `episodes/<name>/episode.txt` with `secs` set to `auto` and these header lines:
+   ```
+   vo: vo.wav               # the recording, saved next to episode.txt
+   vo_align: vo_align.json  # written by vo_align.py
+   ```
+   Every caption line is one spoken phrase, in the order it is spoken. Keep lines short (≤ 7 words) because they are also the on-screen captions. A line starting with `~` is spoken but not shown (for example `~Then.` under the impact word).
+3. **Align.** Run `python3 vo_align.py episodes/<name>/episode.txt episodes/<name>/vo.wav`. It finds the pauses in the recording and fits the script lines to them, so no speech-to-text is needed. Check the printed table; each line's start time should match the recording.
+4. **Build.** Run `./build.sh episodes/<name>/episode.txt`. Each shot starts 0.15 s before its first line is spoken, captions pop in word by word with the voice, and shots after the last spoken line (such as `review | 3.4`) are added at the end.
+   - `fx` can be timed to a word: `punch@w4` fires at the 4th spoken word of that shot.
+   - Outputs: `<name>_video.mp4` (**picture + captions + VO** in one file), `<name>_music.wav` and `<name>_sfx.wav` as separate stems, `<name>_vo.wav`, `_captions.srt`, `_markers.csv`, `_preview.mp4` (everything, -14 LUFS).
+   - The VO gets voice processing (compression, -16 LUFS). The music ducks about 5 dB under speech, and the music + SFX bed sits about 9 dB below the voice. With all stems at 0 dB you get the intended mix.
+5. **Pacing.** Aim for one shot per 1–2 spoken lines (2–4 s each). If a shot runs over 4.5 s, split its caption lines into separate shots.
+
+### More character options (added for the Ramayana series)
+- `body: "sari"` plus `sari: "#hex"`: a sari with blouse and pallu. Women also get thinner brows, a bindi and a nose stud.
+- `hair`: `bun` (with `hairCol`), `jata` (an ascetic's matted top-knot with rudraksha beads), `plain` (short), plus the earlier `drona` / `eka` / `arjuna`.
+- `old: true` adds wrinkles. `veil: true` puts the sari over the head.
+- Poses: `taste` (berry to the mouth, leaf of berries in the other hand) and `sweep` (broom). `leaf` + `berries: true` puts berries on the offering leaf.
+- Ready-made Ramayana cast (in `episodes/shabari/episode.txt`, copy the `cast:` line): `rama`, `lakshmana`, `shabari`, `shabariY`, `matanga`, `villager`, `villager2`.
+- `stage` chars also accept `eyes2` (switches together with `pose2` / `expr2`).
+- `levelup` accepts `counter: {"label","from","to"}`, which replaces the target with a big ticking number.
+- `sign` accepts `who` (the character peeking from behind the post).

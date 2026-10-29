@@ -72,7 +72,7 @@ const SCENES = {
     draw(lt, T) {
       forestBase(T, { sunY: 1000, rays: 0.3, seed: 13 });
       const peek = easeOut((lt - 0.6) / 0.5);
-      drawPerson(lerp(1080, 905, peek), 2050, 1150, { who: 'eka', expr: 'sad', look: -1 }, T);
+      drawPerson(lerp(1080, 905, peek), 2050, 1150, { who: D('who', 'eka'), expr: 'sad', look: -1 }, T);
       const wood = '#6a3f26', woodD = '#4a2a18';
       for (const x of [215, 865]) { rrect(x - 34, 240, 68, 1500, 10, wood); ctx.fillStyle = woodD; ctx.fillRect(x - 34, 240, 14, 1500); }
       rrect(130, 250, 820, 70, 12, wood); poly([[100, 260], [540, 140], [980, 260]], '#9a6234');
@@ -159,6 +159,14 @@ const SCENES = {
       rrect(350, 450, 590, 46, 23, '#3a2c48'); rrect(350, 450, Math.max(46, 590 * ((lt * 2.3) % 1 * (1 - p) + p)), 46, 23, '#f2c14e');
       txt(D('sub', 'SELF-TAUGHT · NO TEACHER'), 350, 545, 30, { align: 'left', fill: '#b8aec8', weight: 500 });
       // target
+      const cnt = D('counter', null);
+      if (cnt) {
+        const v = Math.round(lerp(cnt.from, cnt.to, ease(lt / Math.max(0.6, (CUR.t1 - CUR.t0) * 0.75))));
+        txt(cnt.label, 540, 760, 52, { fill: '#b8aec8' });
+        txt(String(v), 540, 960, 260, { fill: PAL.gold, stroke: '#1a0e10', sw: 18, scale: 1 + 0.05 * Math.sin(lt * 25) });
+        if (D('stamp', null)) stamp(D('stamp', 'SELF-TAUGHT'), 540, 1520, lt - Math.max(0.8, (CUR.t1 - CUR.t0) - 0.7), { size: 92, color: PAL.gold, rot: -0.1 });
+        return;
+      }
       const tx = 540, ty = 1010;
       const rings = ['#f4efe6', '#1c1c22', '#3a7bd5', '#e0322a', '#f2c14e'];
       for (let i = 0; i < 5; i++) circ(tx, ty, 200 - i * 40, rings[i]);
@@ -194,9 +202,12 @@ const SCENES = {
       const p = easeBack((lt - 0.25) / 0.3);
       if (lt > 0.25) {
         ctx.save(); ctx.translate(540, 360); ctx.scale(p, p);
-        rrect(-330, -80, 660, 160, 80, '#2fbf62'); ctx.strokeStyle = '#0d3a1e'; ctx.lineWidth = 8; ctx.stroke();
-        circ(-250, 0, 52, '#fff'); stroke([[-275, 0], [-255, 22], [-222, -22]], '#2fbf62', 13);
-        txt(D('badge', '0 SCRATCHES'), 40, 6, 66, { fill: '#fff' });
+        const bt = D('badge', '0 SCRATCHES'); ctx.font = '700 66px Pop'; let fs = 66; let tw = ctx.measureText(bt).width;
+        if (tw > 760) { fs = 66 * 760 / tw; tw = 760; }
+        const bw = tw + 230, bx = -bw / 2;
+        rrect(bx, -80, bw, 160, 80, '#2fbf62'); ctx.strokeStyle = '#0d3a1e'; ctx.lineWidth = 8; ctx.stroke();
+        circ(bx + 80, 0, 52, '#fff'); stroke([[bx + 55, 0], [bx + 75, 22], [bx + 108, -22]], '#2fbf62', 13);
+        txt(bt, bx + 150 + tw / 2, 6, fs, { fill: '#fff' });
         ctx.restore();
       }
       const R = rng(7);
@@ -357,7 +368,7 @@ SCENES.stage = {
     }
     for (const c of D('chars', [])) {
       const late = c.switch != null && lt > c.switch;
-      const p = Object.assign({}, c, { pose: late && c.pose2 ? c.pose2 : c.pose, expr: late && c.expr2 ? c.expr2 : c.expr });
+      const p = Object.assign({}, c, { pose: late && c.pose2 ? c.pose2 : c.pose, expr: late && c.expr2 ? c.expr2 : c.expr, eyes: late && c.eyes2 ? c.eyes2 : c.eyes });
       if (c.enter) { const k = easeOut(lt / c.enter); p.alpha = k; }
       drawPerson(c.x ?? 540, c.y ?? 1750, c.h ?? 1000, p, T);
     }

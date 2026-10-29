@@ -3,7 +3,8 @@
 
 usage: python3 audio.py out/ekalavya.json out/ekalavya/ekalavya
 writes <prefix>_music.wav, <prefix>_sfx.wav (44.1 kHz stereo, exactly the timeline length)
-and <prefix>_mix.wav (= music + sfx, for previews). 24-bit PCM, peaks <= -1 dBFS.
+and <prefix>_mix.wav (= music + sfx [+ vo], for previews). 24-bit PCM, peaks <= -1 dBFS.
+If the timeline has a voice-over: also <prefix>_vo.wav (aligned to 0:00), and the music is ducked ~5 dB under the voice.
 Music and SFX share one gain, so music + sfx at 0 dB each = the balance of the finished video (~ -14 LUFS).
 """
 import json, sys, subprocess, re, tempfile, os, numpy as np
@@ -158,15 +159,36 @@ def lufs(x):
     os.remove(path)
     return float(re.findall(r'I:\s+(-?[\d.]+) LUFS', out)[-1])
 
-mix = music + sfx
-# one shared gain -> stems keep their balance; aim for -14 LUFS but never let any stem or the sum peak above -1 dBFS
-g = 10 ** ((-14.0 - lufs(mix)) / 20)
-peak = max(np.max(np.abs(music)), np.max(np.abs(sfx)), np.max(np.abs(mix))) * g
-if peak > 0.891: g *= 0.891 / peak
-music *= g; sfx *= g; mix = music + sfx
+vo = None
+if tl.get('vo') and tl['vo'].get('path'):
+    raw = subprocess.run(['ffmpeg', '-v', 'error', '-i', tl['vo']['path'], '-af', 'highpass=f=70,acompressor=threshold=-26dB:ratio=3:attack=5:release=120:makeup=2,loudnorm=I=-16:TP=-1.5:LRA=8', '-f', 'f32le', '-ac', '2', '-ar', str(SR), '-'], capture_output=True, check=True).stdout  # voice processing: compress + -16 LUFS
+    v = np.frombuffer(raw, np.float32).reshape(-1, 2).astype(float)
+    vo = np.zeros((N, 2)); vo[:min(N, len(v))] = v[:N]
+    # duck the music bed ~5 dB under the voice (smoothed envelope), so the stems already sit right
+    env_v = np.abs(vo).max(1)
+    k = int(0.25 * SR); env_v = np.convolve(env_v, np.ones(k) / k, 'same')
+    speaking = np.clip(env_v / (np.percentile(env_v[env_v > 0], 60) + 1e-9), 0, 1)
+    sm = int(0.15 * SR); speaking = np.convolve(speaking, np.ones(sm) / sm, 'same')
+    music *= (1 - 0.44 * speaking)[:, None]
+
+if vo is None:
+    mix = music + sfx
+    # one shared gain -> stems keep their balance; aim for -14 LUFS but never let any stem or the sum peak above -1 dBFS
+    g = 10 ** ((-14.0 - lufs(mix)) / 20)
+    peak = max(np.max(np.abs(music)), np.max(np.abs(sfx)), np.max(np.abs(mix))) * g
+    if peak > 0.891: g *= 0.891 / peak
+    music *= g; sfx *= g; mix = music + sfx
+else:
+    # voice-over leads: VO at about -16 LUFS, music+sfx bed about 9 dB below it
+    bed = music + sfx
+    gb = 10 ** ((-25.0 - lufs(bed)) / 20); music *= gb; sfx *= gb
+    mix = vo + music + sfx
+    peak = max(np.max(np.abs(x)) for x in (vo, music, sfx, mix))
+    if peak > 0.891:
+        s = 0.891 / peak; vo *= s; music *= s; sfx *= s; mix *= s
 prefix = sys.argv[2]
 os.makedirs(os.path.dirname(prefix) or '.', exist_ok=True)
-for name, x in (('music', music), ('sfx', sfx), ('mix', mix)):
+for name, x in (('music', music), ('sfx', sfx), ('mix', mix)) + ((('vo', vo),) if vo is not None else ()):
     fd, tmp = tempfile.mkstemp(suffix='.wav'); os.close(fd)
     wavfile.write(tmp, SR, x.astype(np.float32))
     subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-c:a', 'pcm_s24le', f'{prefix}_{name}.wav'], check=True)

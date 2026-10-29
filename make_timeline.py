@@ -58,7 +58,7 @@ def parse_value(v):
 def caption_line(text):
     """*gold* and !red! markers; a marked span may cover several words (*GOD MODE.*)."""
     hl, words, mode = {}, [], None
-    for tok in text.upper().split():
+    for tok in text.lstrip('~').upper().split():
         opened = None
         if mode is None and tok[:1] in '*!' or (mode is None and len(tok) > 1 and tok[0] in '"\'(' and tok[1] in '*!'):
             i = 0 if tok[0] in '*!' else 1
@@ -77,7 +77,11 @@ def caption_line(text):
     return ' '.join(words), hl
 
 
-def compile_episode(src):
+LEAD, TAIL = 0.15, 0.9   # VO mode: a shot starts LEAD s before its first spoken line; the last line gets TAIL s
+
+
+def compile_episode(src, base_dir='.'):
+    base_dir = pathlib.Path(base_dir)
     meta, shots = {}, []
     for ln_no, raw in enumerate(src.splitlines(), 1):
         line = raw.rstrip()
@@ -100,44 +104,100 @@ def compile_episode(src):
             raise SystemExit(f'line {ln_no}: "in" must be cut, fade or black')
         if mood not in MOODS:
             raise SystemExit(f'line {ln_no}: mood must be one of {", ".join(MOODS)}')
-        shots.append(dict(scene=scene, secs=float(secs), tin=tin, mood=mood, caps=caps, fx=fx, data={}))
+        lines = [c.strip() for c in caps.split(' / ') if c.strip()] if caps and caps != '-' else []
+        shots.append(dict(scene=scene, secs=None if secs == 'auto' else float(secs), tin=tin, mood=mood,
+                          lines=lines, fx=fx, data={}, ln=ln_no))
 
     fps = int(meta.get('fps', 30))
     tl = {"title": meta.get('title', 'Untitled'), "fps": fps, "shots": [], "captions": [], "sfx": [],
           "music": {"pulse": [], "pad": [], "heartbeat": []}}
     if 'cast' in meta:
         tl['cast'] = parse_value(meta['cast'])
-    t = 0.0
+
+    # ---------- timing ----------
+    vo = None
+    if 'vo_align' in meta:
+        al = json.loads((base_dir / meta['vo_align']).read_text())
+        ph = list(al['phrases']); k = 0
+        for s in shots:
+            s['ph'] = []
+            for ln in s['lines']:
+                if k >= len(ph):
+                    raise SystemExit(f'line {s["ln"]}: more caption lines than aligned phrases. Re-run vo_align.py')
+                want = caption_line(ln)[0]
+                if want != ph[k]['text']:
+                    raise SystemExit(f'line {s["ln"]}: "{want}" != aligned "{ph[k]["text"]}". Re-run vo_align.py after editing captions')
+                s['ph'].append(ph[k]); k += 1
+        if k != len(ph):
+            raise SystemExit('fewer caption lines than aligned phrases. Re-run vo_align.py')
+        vo = {"path": str((base_dir / meta['vo']).resolve()) if 'vo' in meta else None, "duration": al['duration']}
+        last_ph = max(i for i, s in enumerate(shots) if s['ph'])
+        starts = []
+        for i, s in enumerate(shots):
+            if i == 0: st = 0.0
+            elif s['ph']: st = max(starts[-1] + 0.3, s['ph'][0]['t0'] - LEAD)
+            else:
+                prev = shots[i - 1]
+                if prev['secs'] is not None and not prev['ph']: st = starts[-1] + prev['secs']
+                else:
+                    st = prev['ph'][-1]['t1'] + TAIL
+                    if i - 1 == last_ph: st = max(st, al['duration'])
+            starts.append(round(st, 3))
+        ends = starts[1:] + [round(starts[-1] + shots[-1]['secs'], 3) if shots[-1]['secs'] is not None
+                              else round(max(shots[-1]['ph'][-1]['t1'] + TAIL, al['duration']), 3)]
+    else:
+        starts, t = [], 0.0
+        for s in shots:
+            if s['secs'] is None:
+                raise SystemExit(f'line {s["ln"]}: secs "auto" needs a voice-over (vo_align: in the header)')
+            starts.append(round(t, 3)); t += s['secs']
+        ends = starts[1:] + [round(t, 3)]
+
     for i, s in enumerate(shots):
-        t0, t1 = round(t, 3), round(t + s['secs'], 3)
+        t0, t1 = starts[i], ends[i]
         data = dict(s['data'])
         cam = data.pop('cam', None) or SCENE_CAMS.get(s['scene'], DEFAULT_CAM)
         shot = {"scene": s['scene'], "t0": t0, "t1": t1, "in": s['tin'], "cam": cam}
-        punches = []
-        nowhoosh = False
+        words = [w for p in s.get('ph', []) for w in p['words']]
+        punches, nowhoosh = [], False
         for tok in s['fx']:
             if tok == 'nowhoosh':
                 nowhoosh = True; continue
             name, _, at = tok.partition('@')
-            at = float(at or 0)
-            if name == 'punch':
-                punches.append(round(t0 + at, 3)); tl['sfx'].append({"t": round(t0 + at, 3), "type": "impact"})
-                if at == 0: nowhoosh = True
-            elif name in SFX_NAMES:
-                tl['sfx'].append({"t": round(t0 + at, 3), "type": name})
+            if at.startswith('w'):
+                n = int(at[1:])
+                if not words or n < 1 or n > len(words):
+                    raise SystemExit(f'line {s["ln"]}: {tok}: shot has {len(words)} spoken words')
+                when = words[n - 1][1]
             else:
-                raise SystemExit(f'shot {i + 1} ({s["scene"]}): unknown fx "{name}". Known: punch, nowhoosh, {", ".join(sorted(SFX_NAMES))}')
+                when = t0 + float(at or 0)
+            when = round(when, 3)
+            if name == 'punch':
+                punches.append(when); tl['sfx'].append({"t": when, "type": "impact"})
+                if abs(when - t0) < 0.05: nowhoosh = True
+            elif name in SFX_NAMES:
+                tl['sfx'].append({"t": when, "type": name})
+            else:
+                raise SystemExit(f'line {s["ln"]}: unknown fx "{name}". Known: punch, nowhoosh, {", ".join(sorted(SFX_NAMES))}')
         if punches: shot['punch'] = punches
         if data: shot['data'] = data
         if s['tin'] == 'cut' and i > 0 and not nowhoosh:
             tl['sfx'].append({"t": t0, "type": "whoosh"})
         tl['shots'].append(shot)
-        # captions: spread lines evenly across the shot
-        if s['caps'] and s['caps'] != '-':
-            lines = [c.strip() for c in s['caps'].split(' / ') if c.strip()]
+        # captions
+        if vo is not None:
+            for ln, p in zip(s['lines'], s['ph']):
+                if ln.startswith('~'): continue
+                text, hl = caption_line(ln)
+                cap = {"t0": round(max(0, p['t0'] - 0.05), 3), "t1": round(p['t1'] + 0.8, 3), "text": text,
+                       "wt": [round(w[1], 3) for w in p['words']]}
+                if hl: cap['hl'] = hl
+                tl['captions'].append(cap)
+        elif s['lines']:
             start = t0 + (0.3 if i == 0 else 0.1)
-            step = (t1 - start) / len(lines)
-            for k, ln in enumerate(lines):
+            step = (t1 - start) / len(s['lines'])
+            for k, ln in enumerate(s['lines']):
+                if ln.startswith('~'): continue
                 text, hl = caption_line(ln)
                 cap = {"t0": round(start + k * step, 3), "t1": round(start + (k + 1) * step, 3), "text": text}
                 if hl: cap['hl'] = hl
@@ -146,20 +206,28 @@ def compile_episode(src):
             r = tl['music'][track]
             if r and abs(r[-1][1] - t0) < 1e-6: r[-1][1] = t1
             else: r.append([t0, t1])
-        t = t1
-    tl['duration'] = round(t, 3)
+    caps = tl['captions']
+    for a, b in zip(caps, caps[1:]):       # a caption never overlaps the next one
+        a['t1'] = round(min(a['t1'], b['t0']), 3)
+    # snap the end to a whole frame so video frames and audio samples describe exactly the same length
+    import math
+    dur = round(math.ceil(ends[-1] * fps - 1e-6) / fps, 6)
+    tl['shots'][-1]['t1'] = dur
+    tl['duration'] = dur
+    if vo is not None:
+        tl['vo'] = vo
     tl['sfx'].sort(key=lambda e: e['t'])
     return tl
 
 
 if __name__ == '__main__':
-    src = pathlib.Path(sys.argv[1]).read_text()
-    tl = compile_episode(src)
+    src_path = pathlib.Path(sys.argv[1])
+    tl = compile_episode(src_path.read_text(), src_path.parent)
     out = sys.argv[2] if len(sys.argv) > 2 else None
     js = json.dumps(tl, indent=1)
     if out:
         pathlib.Path(out).parent.mkdir(parents=True, exist_ok=True)
         pathlib.Path(out).write_text(js)
-        print(f'{out}: {len(tl["shots"])} shots, {len(tl["captions"])} caption lines, {tl["duration"]}s')
+        print(f'{out}: {len(tl["shots"])} shots, {len(tl["captions"])} caption lines, {tl["duration"]}s' + (' (voice-over timed)' if 'vo' in tl else ''))
     else:
         print(js)
